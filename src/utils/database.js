@@ -48,6 +48,38 @@ function getDefaultConfig() {
       activatedAt: null,
       activatedBy: null,
     },
+
+    honeypot: {
+      enabled: false,
+      channelIds: [],
+    },
+
+    reputation: {
+      enabled: false,
+      rewardRoles: [],  // [{ minScore: 75, roleId: null }]
+    },
+
+    emergency: {
+      dmAdmins: true,
+    },
+
+    vacation: {
+      active: false,
+      previousMode: 'manual',
+      endsAt: null,
+    },
+
+    network: {
+      enabled: false,
+    },
+
+    health: {
+      weeklyReport: false,
+      reportChannelId: null,
+      lastReportAt: null,
+    },
+
+    lastNotifiedVersion: null,
   };
 }
 

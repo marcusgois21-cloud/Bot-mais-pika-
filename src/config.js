@@ -51,5 +51,24 @@ module.exports = {
   DEFAULT_LANGUAGE: 'pt_BR',
 
   // Versão do bot
-  VERSION: '1.0.0',
+  VERSION: '2.0.0',
+
+  // Changelog por versão (exibido ao admin quando bot atualiza)
+  CHANGELOG: {
+    '2.0.0': [
+      '🧠 Análise de incidentes com IA (Claude API)',
+      '⭐ Sistema de Reputação por membro',
+      '🏥 Score de Saúde do servidor',
+      '🍯 Canais Honeypot automáticos',
+      '🌐 Lista negra de rede entre servidores',
+      '🌴 Modo de Férias com retorno automático',
+      '📦 Backup/Restore de configurações',
+      '🚨 DMs de emergência para administradores',
+      '🎮 3 novos jogos: Simon Says, CAPTCHA Matemático, Encontre o Intruso',
+      '🔍 Verificação adaptativa por risco (idade da conta)',
+    ],
+  },
+
+  // Planos disponíveis
+  PLAN_LEVELS: { free: 0, pro: 1, enterprise: 2 },
 };

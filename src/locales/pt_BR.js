@@ -253,6 +253,69 @@ module.exports = {
     },
   },
 
+  games: {
+    simonsays: { title: '## Simon Says', tryAgain: 'Tentar Novamente', tryOther: 'Tentar Outro Jogo' },
+    math: { title: '## CAPTCHA Matemático', tryAgain: 'Tentar Novamente' },
+    intruder: { title: '## Encontre o Intruso!', tryAgain: 'Tentar Novamente' },
+  },
+
+  reputation: {
+    title: '## Reputação',
+    score: 'Pontuação: **{score}/100**',
+    grade: 'Nível: **{grade}**',
+    history: 'Histórico Recente',
+    noHistory: 'Sem histórico ainda.',
+    updated: 'Reputação de **{user}** atualizada: `{delta}` → **{score}/100**',
+  },
+
+  health: {
+    title: '## Score de Saúde do Servidor',
+    subtitle: 'Análise de segurança automática',
+    score: 'Score: **{score}/100** — Nota: **{grade}**',
+    weeklyReport: '## Relatório Semanal de Saúde',
+    breakdown: 'Detalhamento',
+    aiComment: 'Análise da IA',
+    pass: '✅',
+    fail: '❌',
+  },
+
+  honeypot: {
+    title: '## Canais Honeypot',
+    description: 'Canais invisíveis que detectam invasores automaticamente.',
+    active: 'Honeypots ativos: **{count}**',
+    createBtn: 'Criar Honeypot',
+    removeBtn: 'Remover',
+    created: 'Canal honeypot criado: {channel}',
+    triggered: '**HONEYPOT ATIVADO!**\nUsuário **{user}** acessou um canal honeypot e foi banido.',
+  },
+
+  vacation: {
+    active: '🌴 **Modo de Férias Ativo**',
+    activated: '🌴 Modo de férias ativado! Segurança elevada para **Máximo** por **{duration}**.',
+    deactivated: '✅ Modo de férias desativado! Modo restaurado para **{mode}**.',
+    ended: 'Modo de férias encerrado. Modo de segurança restaurado para **{mode}**.',
+  },
+
+  network: {
+    title: '## Rede de Servidores',
+    description: 'Compartilhe listas negras com outros servidores parceiros.',
+    enabled: 'Rede ativa', disabled: 'Rede inativa',
+    blacklistCount: 'Usuários na lista negra: **{count}**',
+    enableBtn: 'Entrar na Rede', disableBtn: 'Sair da Rede',
+    autoban: '🌐 **Banimento Automático (Rede)**\n**{user}** estava na lista negra da rede.',
+  },
+
+  plans: {
+    title: '## Plano do Servidor',
+    current: 'Plano atual: **{plan}**',
+    upgradeNeeded: '⚠️ Esta função requer o plano **{plan}** ou superior.',
+  },
+
+  changelog: {
+    title: '## Novidades — v{version}',
+    description: 'O bot foi atualizado! Veja o que há de novo:',
+  },
+
   logs: {
     title: '## Log do Bot',
     memberJoin: '**Entrada:** {user} (`{id}`) entrou no servidor\nConta criada: **{age}**',

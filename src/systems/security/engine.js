@@ -6,6 +6,9 @@ const { extractUrls, extractDomain } = require('../../utils/helpers');
 const { SECURITY } = require('../../config');
 const alerts = require('./alerts');
 const modes = require('./modes');
+const reputation = require('../reputation/index');
+const emergency = require('../emergency/index');
+const ai = require('../ai/analyzer');
 
 // ─────────────────────────────────────────────
 // In-memory rate-limit stores
@@ -71,11 +74,30 @@ async function onMemberJoin(member) {
   if (count >= SECURITY.RAID_JOIN_COUNT) {
     const windowSec = SECURITY.RAID_JOIN_WINDOW_MS / 1000;
     const action = await modes.handleRaid(guild, config);
-    await alerts.sendAlert(guild, config, lang, 'raidDetected', {
-      count,
-      seconds: windowSec,
-      action,
-    });
+    await alerts.sendAlert(guild, config, lang, 'raidDetected', { count, seconds: windowSec, action });
+
+    // Emergency DM to admins
+    const raidTitle = lang === 'en_US' ? '🚨 Raid Detected!' : '🚨 Raid Detectado!';
+    const raidBody = lang === 'en_US'
+      ? `**${count}** accounts joined in **${windowSec}s**. Action taken: **${action}**`
+      : `**${count}** contas entraram em **${windowSec}s**. Ação: **${action}**`;
+    await emergency.dmAdmins(guild, config, raidTitle, raidBody);
+
+    // AI incident analysis (async, non-blocking)
+    if (ai.isAvailable()) {
+      ai.analyzeIncident({
+        type: 'raid', affectedCount: count, durationMs: SECURITY.RAID_JOIN_WINDOW_MS,
+        actionTaken: action, guildName: guild.name,
+      }, lang).then(report => {
+        if (report && config.logs.channelId) {
+          const ch = guild.channels.cache.get(config.logs.channelId);
+          if (ch) {
+            const { buildLogContainer } = require('../../builders/uiBuilder');
+            ch.send(buildLogContainer(`🧠 **Análise IA / AI Analysis**\n${report}`)).catch(() => {});
+          }
+        }
+      }).catch(() => {});
+    }
   }
 }
 
@@ -110,13 +132,27 @@ async function onMessage(message) {
       const action = await modes.handleSpam(message, config);
       if (action) {
         await alerts.sendAlert(message.guild, config, lang, 'spamDetected', {
-          user: `${message.author}`,
-          count,
+          user: `${message.author}`, count,
           seconds: SECURITY.SPAM_MSG_WINDOW_MS / 1000,
           channel: `${message.channel}`,
         });
+        reputation.onViolation(message.guild.id, message.author.id);
       }
     }
+  }
+
+  // ── AI contextual moderation (Pro+) ──
+  if (ai.isAvailable() && message.content?.length > 10) {
+    ai.analyzeMessage(message.content, lang).then(async result => {
+      if (result.risk === 'high') {
+        await modes.handleSpam(message, config); // treat high-risk as spam action
+        await alerts.sendAlert(message.guild, config, lang, 'spamDetected', {
+          user: `${message.author}`, count: 1,
+          seconds: 0, channel: `${message.channel}`,
+        });
+        reputation.onViolation(message.guild.id, message.author.id);
+      }
+    }).catch(() => {});
   }
 
   // ── Link detection ──
@@ -155,10 +191,15 @@ async function onMessage(message) {
     if (mentionCount >= SECURITY.MAX_MENTIONS) {
       await modes.handleMentionSpam(message, config);
       await alerts.sendAlert(message.guild, config, lang, 'mentionSpam', {
-        user: `${message.author}`,
-        count: mentionCount,
+        user: `${message.author}`, count: mentionCount,
       });
+      reputation.onViolation(message.guild.id, message.author.id);
     }
+  }
+
+  // ── Active day reputation bonus ──
+  if (config.reputation?.enabled) {
+    reputation.onActiveDay(message.guild.id, message.author.id);
   }
 }
 

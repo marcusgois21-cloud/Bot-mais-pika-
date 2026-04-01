@@ -179,12 +179,18 @@ function buildConfigPanel(guild, config, lang) {
   );
 
   const row3 = row(
+    primaryBtn('cfg_honeypot', lang === 'en_US' ? 'Honeypot' : 'Honeypot', { name: e(CUSTOM_EMOJIS.alert) }),
+    primaryBtn('cfg_network', lang === 'en_US' ? 'Network' : 'Rede', { name: e(CUSTOM_EMOJIS.shield) }),
+    primaryBtn('cfg_reputation', lang === 'en_US' ? 'Reputation' : 'Reputação', { name: e(CUSTOM_EMOJIS.user) }),
+  );
+
+  const row4 = row(
     secondaryBtn('cfg_test', t('config.buttons.test', lang), { name: e(CUSTOM_EMOJIS.test) }),
   );
 
   const c = container(
     text(t('config.title', lang)),
-    text(`-# ${e(CUSTOM_EMOJIS.shield)} ${t('config.subtitle', lang, { version: '1.0.0' })}`),
+    text(`-# ${e(CUSTOM_EMOJIS.shield)} ${t('config.subtitle', lang, { version: '2.0.0' })}`),
     sep(true),
     text(serverInfo),
     sep(true),
@@ -193,6 +199,8 @@ function buildConfigPanel(guild, config, lang) {
     row2,
     sep(),
     row3,
+    sep(),
+    row4,
   );
 
   return v2Reply([c], true);
@@ -485,6 +493,170 @@ function buildLogContainer(content) {
   return { components: [c], flags: MessageFlags.IsComponentsV2 };
 }
 
+// ─────────────────────────────────────────────
+// Health Score Panel
+// ─────────────────────────────────────────────
+
+function buildHealthPanel(score, grade, breakdown, lang, isWeekly = false) {
+  const { getGradeEmoji } = require('../systems/health/index');
+  const gradeEmoji = getGradeEmoji(grade);
+  const bar = buildScoreBar(score);
+
+  const title = isWeekly
+    ? t('health.weeklyReport', lang)
+    : t('health.title', lang);
+
+  const scoreDisplay = `${gradeEmoji} **${score}/100** — ${grade}\n${bar}`;
+
+  const breakdownLines = breakdown.map(b => {
+    const icon = b.pass ? '✅' : '❌';
+    return `${icon} ${b.label}${b.pass ? ` *(+${b.points})*` : ''}`;
+  }).join('\n');
+
+  const c = container(
+    text(title),
+    text(`-# ${t('health.subtitle', lang)}`),
+    sep(true),
+    text(scoreDisplay),
+    sep(),
+    text(`**${t('health.breakdown', lang)}:**\n${breakdownLines}`),
+    sep(true),
+    row(secondaryBtn('cfg_back', t('general.back', lang))),
+  );
+
+  return v2Reply([c], true);
+}
+
+function buildScoreBar(score) {
+  const filled = Math.round(score / 10);
+  return `\`${'█'.repeat(filled)}${'░'.repeat(10 - filled)}\` ${score}%`;
+}
+
+// ─────────────────────────────────────────────
+// Honeypot Panel
+// ─────────────────────────────────────────────
+
+function buildHoneypotPanel(config, lang) {
+  const count = config.honeypot?.channelIds?.length ?? 0;
+  const isEnabled = config.honeypot?.enabled ?? false;
+
+  const desc = t('honeypot.description', lang);
+  const activeText = t('honeypot.active', lang, { count });
+
+  const c = container(
+    text(t('honeypot.title', lang)),
+    sep(true),
+    text(`${desc}\n\n${activeText}`),
+    sep(true),
+    row(
+      successBtn('cfg_honeypot_create', t('honeypot.createBtn', lang)),
+      ...(count > 0 ? [dangerBtn('cfg_honeypot_remove', t('honeypot.removeBtn', lang))] : []),
+    ),
+    sep(),
+    row(secondaryBtn('cfg_back', t('general.back', lang))),
+  );
+
+  return v2Reply([c], true);
+}
+
+// ─────────────────────────────────────────────
+// Network Panel
+// ─────────────────────────────────────────────
+
+function buildNetworkPanel(config, lang) {
+  const { getBlacklist } = require('../systems/network/blacklist');
+  const bl = getBlacklist();
+  const count = Object.keys(bl).length;
+
+  const statusText = config.network?.enabled
+    ? t('network.enabled', lang)
+    : t('network.disabled', lang);
+
+  const c = container(
+    text(t('network.title', lang)),
+    sep(true),
+    text(`${t('network.description', lang)}\n\n**${t('general.status', lang)}:** ${statusText}\n${t('network.blacklistCount', lang, { count })}`),
+    sep(true),
+    row(
+      config.network?.enabled
+        ? dangerBtn('cfg_network_disable', t('network.disableBtn', lang))
+        : successBtn('cfg_network_enable', t('network.enableBtn', lang)),
+    ),
+    sep(),
+    row(secondaryBtn('cfg_back', t('general.back', lang))),
+  );
+
+  return v2Reply([c], true);
+}
+
+// ─────────────────────────────────────────────
+// Reputation Config Panel
+// ─────────────────────────────────────────────
+
+function buildReputationPanel(config, lang) {
+  const isEnabled = config.reputation?.enabled ?? false;
+  const statusText = isEnabled ? t('general.enabled', lang) : t('general.disabled', lang);
+
+  const c = container(
+    text(`## ${lang === 'en_US' ? 'Reputation System' : 'Sistema de Reputação'}`),
+    sep(true),
+    text(`**${t('general.status', lang)}:** ${statusText}\n\n${lang === 'en_US' ? 'Members earn/lose points based on behavior. Use `/reputacao ver` to check any member.' : 'Membros ganham/perdem pontos com base no comportamento. Use `/reputacao ver` para consultar qualquer membro.'}`),
+    sep(true),
+    row(
+      isEnabled
+        ? dangerBtn('cfg_rep_disable', t('config.buttons.disable', lang))
+        : successBtn('cfg_rep_enable', t('config.buttons.enable', lang)),
+    ),
+    sep(),
+    row(secondaryBtn('cfg_back', t('general.back', lang))),
+  );
+
+  return v2Reply([c], true);
+}
+
+// ─────────────────────────────────────────────
+// Changelog Panel
+// ─────────────────────────────────────────────
+
+function buildChangelogPanel(version, changes, lang) {
+  const items = changes.map(c2 => `• ${c2}`).join('\n');
+
+  const c = container(
+    text(t('changelog.title', lang, { version })),
+    sep(true),
+    text(t('changelog.description', lang)),
+    sep(),
+    text(items),
+  );
+
+  return { components: [c], flags: MessageFlags.IsComponentsV2 };
+}
+
+// ─────────────────────────────────────────────
+// Verification Method Selector (extended with new games)
+// ─────────────────────────────────────────────
+
+function buildMethodSelectorExtended(lang) {
+  const c = container(
+    text(t('verification.chooseMethod', lang)),
+    sep(true),
+    text(t('verification.chooseMethodDesc', lang)),
+    sep(true),
+    row(
+      primaryBtn('verify_method_tictactoe', t('verification.tictactoeBtn', lang)),
+      primaryBtn('verify_method_fruits', t('verification.fruitsBtn', lang)),
+    ),
+    sep(),
+    row(
+      primaryBtn('verify_method_simon', 'Simon Says'),
+      primaryBtn('verify_method_math', lang === 'en_US' ? 'Math CAPTCHA' : 'CAPTCHA Matemático'),
+      primaryBtn('verify_method_intruder', lang === 'en_US' ? 'Find the Intruder' : 'Encontre o Intruso'),
+    ),
+  );
+
+  return v2Reply([c], true);
+}
+
 module.exports = {
   // Primitives
   sep, text, container, row, v2Reply,
@@ -493,6 +665,7 @@ module.exports = {
   buildVerificationPanel,
   buildWhyVerify,
   buildMethodSelector,
+  buildMethodSelectorExtended,
   buildConfigPanel,
   buildLanguagePanel,
   buildSecurityPanel,
@@ -503,4 +676,9 @@ module.exports = {
   buildTestResults,
   buildAlertContainer,
   buildLogContainer,
+  buildHealthPanel,
+  buildHoneypotPanel,
+  buildNetworkPanel,
+  buildReputationPanel,
+  buildChangelogPanel,
 };

@@ -253,6 +253,69 @@ module.exports = {
     },
   },
 
+  games: {
+    simonsays: { title: '## Simon Says', tryAgain: 'Try Again', tryOther: 'Try Another Game' },
+    math: { title: '## Math CAPTCHA', tryAgain: 'Try Again' },
+    intruder: { title: '## Find the Intruder!', tryAgain: 'Try Again' },
+  },
+
+  reputation: {
+    title: '## Reputation',
+    score: 'Score: **{score}/100**',
+    grade: 'Grade: **{grade}**',
+    history: 'Recent History',
+    noHistory: 'No history yet.',
+    updated: '**{user}**\'s reputation updated: `{delta}` → **{score}/100**',
+  },
+
+  health: {
+    title: '## Server Health Score',
+    subtitle: 'Automated security analysis',
+    score: 'Score: **{score}/100** — Grade: **{grade}**',
+    weeklyReport: '## Weekly Health Report',
+    breakdown: 'Breakdown',
+    aiComment: 'AI Analysis',
+    pass: '✅',
+    fail: '❌',
+  },
+
+  honeypot: {
+    title: '## Honeypot Channels',
+    description: 'Invisible channels that automatically detect intruders.',
+    active: 'Active honeypots: **{count}**',
+    createBtn: 'Create Honeypot',
+    removeBtn: 'Remove',
+    created: 'Honeypot channel created: {channel}',
+    triggered: '**HONEYPOT TRIGGERED!**\nUser **{user}** accessed a honeypot channel and was banned.',
+  },
+
+  vacation: {
+    active: '🌴 **Vacation Mode Active**',
+    activated: '🌴 Vacation mode activated! Security elevated to **Maximum** for **{duration}**.',
+    deactivated: '✅ Vacation mode deactivated! Mode restored to **{mode}**.',
+    ended: 'Vacation mode ended. Security mode restored to **{mode}**.',
+  },
+
+  network: {
+    title: '## Server Network',
+    description: 'Share blacklists with other partner servers.',
+    enabled: 'Network active', disabled: 'Network inactive',
+    blacklistCount: 'Blacklisted users: **{count}**',
+    enableBtn: 'Join Network', disableBtn: 'Leave Network',
+    autoban: '🌐 **Auto Ban (Network)**\n**{user}** was on the network blacklist.',
+  },
+
+  plans: {
+    title: '## Server Plan',
+    current: 'Current plan: **{plan}**',
+    upgradeNeeded: '⚠️ This feature requires the **{plan}** plan or higher.',
+  },
+
+  changelog: {
+    title: '## What\'s New — v{version}',
+    description: 'The bot was updated! See what\'s new:',
+  },
+
   logs: {
     title: '## Bot Log',
     memberJoin: '**Join:** {user} (`{id}`) joined the server\nAccount created: **{age}**',
