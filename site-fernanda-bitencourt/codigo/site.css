@@ -1,0 +1,275 @@
+/* Identidade do site da vereadora Fernanda Bitenco. Mesma essência do site
+ * político clássico, com identidade própria: dossiê editorial em vinho e ouro,
+ * serifa de display, molduras com filete dourado. Diferente do azul-marinho e
+ * do crachá de campanha do site do Wellington Neim. */
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins-500-normal.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins-600-normal.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins-700-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@theme {
+  --color-vinho: #6e1e3c;
+  --color-vinhoesc: #4e1129;
+  --color-framboesa: #b24c6b;
+  --color-ouro: #c9a24b;
+  --color-ouroclaro: #e7ce8f;
+  --color-marfim: #fbf7f1;
+  --color-areia: #f3ece3;
+  --color-texto: #2a2129;
+  --color-apoio: #7a6e72;
+  --font-pop: "Poppins", "Segoe UI", -apple-system, sans-serif;
+  --font-serifa: Georgia, "Times New Roman", "Playfair Display", serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: #6e1e3c;
+  color: #fbf7f1;
+}
+
+/* Wordmark editorial (usado na navegação e no rodapé) */
+.marca-fern {
+  font-family: var(--font-serifa);
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 0.3px;
+  line-height: 1;
+}
+
+/* Eyebrow com losango de ouro (assinatura editorial) */
+.olho {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-pop);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+.olho::before,
+.olho::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  background: var(--color-ouro);
+  transform: rotate(45deg);
+  flex: none;
+}
+.olho.olho-so::after {
+  display: none;
+}
+
+/* Nome gigante do masthead */
+.nome-grande {
+  font-family: var(--font-serifa);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  font-size: clamp(44px, 9vw, 104px);
+}
+
+/* Moldura de retrato reservada (placeholder no tamanho certo, com filete de
+ * ouro). Substituir o conteúdo interno pela foto real da vereadora. */
+.moldura {
+  position: relative;
+  border: 1px solid var(--color-ouro);
+  padding: 10px;
+  background: var(--color-areia);
+}
+.moldura::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(201, 162, 75, 0.4);
+  pointer-events: none;
+}
+.moldura-vazia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 4 / 5;
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      rgba(110, 30, 60, 0.05) 0,
+      rgba(110, 30, 60, 0.05) 10px,
+      transparent 10px,
+      transparent 20px
+    ),
+    var(--color-areia);
+  color: var(--color-apoio);
+  text-align: center;
+  font-family: var(--font-pop);
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 24px;
+}
+.moldura img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Faixa vinho dos números */
+.faixa-vinho {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      130% 120% at 0% 0%,
+      rgba(178, 76, 107, 0.35) 0%,
+      rgba(78, 17, 41, 0) 55%
+    ),
+    linear-gradient(150deg, #7e2547 0%, #6e1e3c 45%, #4e1129 100%);
+}
+.faixa-vinho::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-ouro), var(--color-ouroclaro));
+}
+.num-ouro {
+  font-family: var(--font-serifa);
+  color: var(--color-ouroclaro);
+}
+
+/* Marcador numerado das prioridades (assinatura própria) */
+.prioridade {
+  position: relative;
+  border-left: 2px solid var(--color-areia);
+  padding-left: 26px;
+  transition: border-color 0.2s ease;
+}
+.prioridade:hover {
+  border-color: var(--color-ouro);
+}
+.prioridade-num {
+  font-family: var(--font-serifa);
+  font-style: italic;
+  font-weight: 700;
+  color: var(--color-ouro);
+  line-height: 1;
+}
+
+/* Aba de mensagem (vinho com filete de ouro) */
+.aba-mensagem {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(160deg, #6e1e3c 0%, #4e1129 100%);
+}
+.aba-mensagem::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 64px;
+  height: 3px;
+  transform: translateX(-50%);
+  background: var(--color-ouro);
+}
+
+/* Entrada suave (dispara no carregamento, nunca espera aparecer na tela) */
+@keyframes surgir {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.surgir {
+  animation: surgir 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.surgir-2 {
+  animation-delay: 0.07s;
+}
+.surgir-3 {
+  animation-delay: 0.14s;
+}
+
+/* Cartão/linha que levanta de leve no hover */
+.cartao-vivo {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.cartao-vivo:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 34px rgba(78, 17, 41, 0.16);
+}
+
+.linha-atuacao .seta {
+  transition: transform 0.2s ease;
+}
+.linha-atuacao:hover .seta {
+  transform: translateX(4px);
+}
+
+/* Sublinhado que cresce da esquerda nos links da navegação */
+.link-nav {
+  position: relative;
+}
+.link-nav::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  height: 2px;
+  width: 100%;
+  background: var(--color-ouroclaro);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.22s ease;
+}
+.link-nav:hover::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .surgir,
+  .surgir-2,
+  .surgir-3 {
+    animation: none;
+  }
+  .cartao-vivo,
+  .linha-atuacao .seta,
+  .link-nav::after {
+    transition: none;
+  }
+}

@@ -1,0 +1,86 @@
+import { createServerFn } from "@tanstack/react-start";
+
+/* Mantém a seção "Na Mídia" atualizada sozinha, sem intervenção manual.
+ * Fonte: o feed RSS oficial da Câmara Municipal de Ponte Nova, filtrado pelo
+ * nome da vereadora. É conteúdo oficial e verificável (nunca boato). Se a busca
+ * falhar, o site cai para a lista curada de atos reais (nunca fica vazio). */
+
+export type Noticia = {
+  titulo: string;
+  resumo: string;
+  data: string;
+  link: string;
+};
+
+const FEED =
+  "https://www.pontenova.mg.leg.br/search_rss" +
+  "?SearchableText=Fernanda+Bitenco&sort_on=Date&sort_order=descending";
+
+const MESES_PT = [
+  "jan", "fev", "mar", "abr", "mai", "jun",
+  "jul", "ago", "set", "out", "nov", "dez",
+];
+
+function limpar(texto: string): string {
+  return texto
+    .replace(/<!\[CDATA\[/g, "")
+    .replace(/\]\]>/g, "")
+    .replace(/<[^>]+>/g, "")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&amp;/g, "&")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function formatarData(iso: string): string {
+  const m = iso.match(/(\d{4})[/-](\d{2})[/-](\d{2})/);
+  if (!m) return "";
+  const dia = parseInt(m[3], 10);
+  const mes = MESES_PT[parseInt(m[2], 10) - 1] ?? "";
+  return `${dia} ${mes} ${m[1]}`;
+}
+
+function pegar(bloco: string, tag: string): string {
+  const m = bloco.match(new RegExp(`<${tag}[^>]*>([\\s\\S]*?)</${tag}>`));
+  return m ? limpar(m[1]) : "";
+}
+
+export const getNoticias = createServerFn({ method: "GET" }).handler(
+  async (): Promise<Noticia[]> => {
+    try {
+      const resp = await fetch(FEED, {
+        headers: {
+          "User-Agent":
+            "Mozilla/5.0 (compatible; fernanda-bitenco-site/1.0)",
+        },
+        // cache de 30 min na borda: mantém fresco sem pesar no servidor da Câmara
+        cf: { cacheTtl: 1800, cacheEverything: true },
+      } as RequestInit);
+      if (!resp.ok) return [];
+      const xml = await resp.text();
+
+      const itens: Noticia[] = [];
+      for (const bloco of xml.split(/<item\s/).slice(1)) {
+        // só itens realmente ligados à vereadora
+        if (!/Fernanda/i.test(bloco)) continue;
+        const titulo = pegar(bloco, "title");
+        const link = pegar(bloco, "link");
+        if (!titulo || !link) continue;
+        itens.push({
+          titulo,
+          resumo: pegar(bloco, "description"),
+          data: formatarData(pegar(bloco, "dc:date")),
+          link,
+        });
+        if (itens.length >= 16) break;
+      }
+      return itens;
+    } catch {
+      return [];
+    }
+  },
+);
