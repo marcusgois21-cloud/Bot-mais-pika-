@@ -18,12 +18,13 @@ Ponte Nova. No ar em **https://wellington-neim.higgsfield.app**
 
 ### 2. Vereadora Fernanda Bitenco — `site-fernanda-bitencourt/`
 Site oficial da vereadora Fernanda Bitenco (Fernanda Félix Bitencourt), de Ponte
-Nova, mandato 2025/2028.
+Nova, mandato 2025/2028. No ar em **https://fernanda-bitenco.higgsfield.app**
 
 - Conceito: mesma essência do site político clássico, com identidade própria —
   duas cores, **Raspberry `#C2185B` + Pale Sky `#E0F2FE`**, serifa de display,
   masthead editorial (diferente do azul-marinho e do crachá do site do Wellington).
+- Foto oficial da vereadora já incluída (`recursos/fernanda-hero.jpg`, fornecida
+  pela cliente) nas molduras do herói e da seção "Quem é".
 - Conteúdo baseado em fatos verificáveis; os blocos de prioridades e mensagem são
   rascunho a confirmar com a vereadora. Ver `site-fernanda-bitencourt/recursos/LEIA-ME.md`.
-- Pendências aguardando a cliente: foto oficial (molduras já reservadas),
-  plataforma/prioridades reais e mensagem/lema.
+- Pendências aguardando a cliente: plataforma/prioridades reais e mensagem/lema.
