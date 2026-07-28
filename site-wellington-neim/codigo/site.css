@@ -1,0 +1,358 @@
+/* Identidade do site do vereador Wellington Neim, no estilo dos sites
+ * políticos clássicos (referência aprovada pelo cliente): branco + azul,
+ * Poppins, distintivo de campanha, cartões arredondados com sombra. */
+
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins-400-normal.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins-500-normal.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins-600-normal.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins-700-normal.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins-700-italic.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Poppins";
+  src: url("/fonts/poppins-800-italic.woff2") format("woff2");
+  font-weight: 800;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Montserrat";
+  src: url("/fonts/montserrat-800-normal.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Montserrat";
+  src: url("/fonts/montserrat-900-italic.woff2") format("woff2");
+  font-weight: 900;
+  font-style: italic;
+  font-display: swap;
+}
+
+@theme {
+  --color-marinho: #14264a;
+  --color-marinhoesc: #0d1b36;
+  --color-celeste: #2ea3f2;
+  --color-royal: #1959ff;
+  --color-ouro: #ffc531;
+  --color-ouroclaro: #ffe08a;
+  --color-fundocinza: #f5f6f8;
+  --color-texto: #2b2f36;
+  --color-apoio: #64707f;
+  --font-pop: "Poppins", "Segoe UI", -apple-system, sans-serif;
+
+  /* tokens da versão anterior, usados nas telas de erro */
+  --color-papel: #f4efe6;
+  --color-painel: #fbf8f2;
+  --color-faixa: #e9e0ce;
+  --color-tinta: #23211c;
+  --color-azul: #1e3a5c;
+  --color-azulnoite: #152c47;
+  --font-serifa: Georgia, "Times New Roman", serif;
+  --font-institucional: "Poppins", "Segoe UI", sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: #1959ff;
+  color: #ffffff;
+}
+
+/* Logo do vereador: crachá azul com borda BRANCA, etiqueta "VEREADOR" EM CIMA
+ * da placa, nome em Montserrat itálico black e o traço branco embaixo. */
+.logo-wrap {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+}
+.logo-neim {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border-radius: 22px;
+  background: linear-gradient(108deg, #0c2c7a 0%, #1450d8 55%, #2f7df2 100%);
+  padding: clamp(30px, 5vw, 46px) clamp(28px, 5vw, 52px) clamp(18px, 3.5vw, 30px);
+  box-shadow: 0 18px 40px rgba(4, 16, 50, 0.5);
+  border: 4px solid #ffffff;
+  font-family: "Montserrat", system-ui, sans-serif;
+}
+.logo-streak {
+  position: absolute;
+  top: -40px;
+  background: rgba(255, 255, 255, 0.08);
+  transform: skewX(-18deg);
+  pointer-events: none;
+}
+.logo-streak-1 {
+  right: -30px;
+  width: 120px;
+  height: 260px;
+}
+.logo-streak-2 {
+  right: 70px;
+  width: 26px;
+  height: 260px;
+  background: rgba(255, 255, 255, 0.05);
+}
+.logo-neim-inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+/* etiqueta VEREADOR sobre a borda de cima da placa */
+.logo-tag {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  background: #1450d8;
+  border: 2px solid #ffffff;
+  color: #ffffff;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  font-size: 12.5px;
+  line-height: 1;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  padding: 8px 20px;
+  border-radius: 5px;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(4, 16, 50, 0.4);
+}
+.logo-nome {
+  font-style: italic;
+  font-weight: 900;
+  font-size: clamp(30px, 7vw, 56px);
+  line-height: 1;
+  color: #ffffff;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  text-shadow: 0 3px 12px rgba(9, 40, 110, 0.35);
+  white-space: nowrap;
+}
+.logo-swoosh {
+  display: block;
+  width: clamp(150px, 45%, 200px);
+  height: auto;
+}
+/* número de urna do vereador, no cantinho da placa */
+.logo-numero {
+  position: absolute;
+  right: clamp(14px, 3vw, 26px);
+  bottom: clamp(12px, 2.6vw, 22px);
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1.5px solid #ffffff;
+  color: #ffffff;
+  font-family: "Montserrat", sans-serif;
+  font-weight: 800;
+  font-size: clamp(13px, 2vw, 18px);
+  letter-spacing: 2px;
+  line-height: 1;
+  padding: 4px 9px 3px;
+  border-radius: 5px;
+}
+
+/* Versão compacta para a barra de navegação */
+.logo-neim-mini {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(108deg, #0c2c7a, #2f7df2);
+  border: 2px solid #ffffff;
+  border-radius: 9px;
+  padding: 6px 13px;
+  font-family: "Montserrat", sans-serif;
+}
+.logo-neim-mini span {
+  font-style: italic;
+  font-weight: 900;
+  font-size: 15px;
+  line-height: 1;
+  color: #ffffff;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Entrada suave (dispara no carregamento, nunca espera aparecer na tela) */
+@keyframes surgir {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.surgir {
+  animation: surgir 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.surgir-2 {
+  animation-delay: 0.06s;
+}
+.surgir-3 {
+  animation-delay: 0.12s;
+}
+
+/* Cartão de número "foda": degradê azul, brilho diagonal, fita e número
+ * dourados, borda dourada sutil. */
+.card-numero {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(150deg, #21447d 0%, #14264a 55%, #0d1b36 100%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 18px;
+  box-shadow: 0 16px 36px rgba(9, 20, 50, 0.45);
+}
+.card-numero::before {
+  content: "";
+  position: absolute;
+  top: -50px;
+  right: -12px;
+  width: 90px;
+  height: 220px;
+  background: rgba(255, 255, 255, 0.06);
+  transform: skewX(-18deg);
+  pointer-events: none;
+}
+.card-numero::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 4px;
+  background: linear-gradient(90deg, #2ea3f2, #6fc0ff);
+}
+.num-ouro {
+  color: #ffffff;
+  text-shadow: 0 2px 14px rgba(46, 163, 242, 0.3);
+}
+
+/* Fundo do topo (banner do herói): degradê azul-marinho com brilhos
+ * diagonais sutis, no lugar da foto. */
+.hero-fundo {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      120% 100% at 50% -15%,
+      rgba(47, 125, 242, 0.38) 0%,
+      rgba(13, 27, 54, 0) 60%
+    ),
+    linear-gradient(160deg, #14264a 0%, #0d1b36 100%);
+}
+.hero-fundo::before {
+  content: "";
+  position: absolute;
+  top: -10%;
+  right: -4%;
+  width: 220px;
+  height: 130%;
+  background: rgba(255, 255, 255, 0.035);
+  transform: skewX(-18deg);
+  pointer-events: none;
+}
+.hero-fundo::after {
+  content: "";
+  position: absolute;
+  top: -10%;
+  left: 10%;
+  width: 70px;
+  height: 130%;
+  background: rgba(255, 255, 255, 0.03);
+  transform: skewX(-18deg);
+  pointer-events: none;
+}
+
+/* Aba da fala (citação) com impacto: degradê + brilho + aspas gigante */
+.aba-fala {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      120% 130% at 50% -25%,
+      rgba(47, 125, 242, 0.38) 0%,
+      rgba(20, 38, 74, 0) 55%
+    ),
+    linear-gradient(160deg, #14264a 0%, #0d1b36 100%);
+}
+.aba-aspas {
+  position: absolute;
+  left: 50%;
+  top: 0.15em;
+  transform: translateX(-50%);
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1;
+  color: rgba(255, 255, 255, 0.16);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Cartão que levanta de leve no hover */
+.cartao-vivo {
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+.cartao-vivo:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 16px 34px rgba(13, 27, 54, 0.16);
+}
+
+.linha-atuacao .seta {
+  transition: transform 0.2s ease;
+}
+.linha-atuacao:hover .seta {
+  transform: translateX(4px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .surgir,
+  .surgir-2,
+  .surgir-3 {
+    animation: none;
+  }
+  .cartao-vivo,
+  .linha-atuacao .seta {
+    transition: none;
+  }
+}
