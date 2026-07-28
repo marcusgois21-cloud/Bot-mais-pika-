@@ -21,8 +21,8 @@ Site oficial da vereadora Fernanda Bitenco (Fernanda Félix Bitencourt), de Pont
 Nova, mandato 2025/2028.
 
 - Conceito: mesma essência do site político clássico, com identidade própria —
-  dossiê editorial em **vinho + dourado + marfim**, serifa de display, masthead
-  editorial (diferente do azul-marinho e do crachá do site do Wellington).
+  duas cores, **Raspberry `#C2185B` + Pale Sky `#E0F2FE`**, serifa de display,
+  masthead editorial (diferente do azul-marinho e do crachá do site do Wellington).
 - Conteúdo baseado em fatos verificáveis; os blocos de prioridades e mensagem são
   rascunho a confirmar com a vereadora. Ver `site-fernanda-bitencourt/recursos/LEIA-ME.md`.
 - Pendências aguardando a cliente: foto oficial (molduras já reservadas),

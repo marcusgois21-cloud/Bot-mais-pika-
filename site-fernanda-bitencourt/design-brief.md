@@ -14,27 +14,27 @@ Ponte Nova, imprensa local.
 
 ## Concept spine
 Mesma essência do site do vereador Wellington Neim (site político clássico
-brasileiro), porém com identidade própria: **"dossiê editorial em vinho e
-ouro"**. Onde o site do Wellington usava crachá de campanha central e azul-
-marinho, este usa **masthead editorial em serifa**, paleta **vinho + dourado +
-marfim** e molduras de recorte com filete dourado. Objetivo: parecer material
-oficial de gabinete, elegante e sóbrio, não template.
+brasileiro), porém com identidade própria: **duas cores — Raspberry + Pale
+Sky**. Onde o site do Wellington usava crachá de campanha central e azul-
+marinho, este usa **masthead editorial em serifa**, o **raspberry como cor de
+destaque** (títulos, faixas, CTAs, molduras) e o **pale sky como cor clara**
+(fundos e os números grandes sobre o raspberry — as duas cores juntas).
 
 ## Diferenças de front-end em relação ao site do Wellington
 1. Herói: masthead editorial (nome gigante em serifa deslocado + retrato à
    direita em moldura de filete) no lugar do crachá azul centralizado.
-2. Paleta: vinho/framboesa + dourado + marfim, no lugar de azul-marinho + celeste.
+2. Paleta: raspberry + pale sky, no lugar de azul-marinho + celeste.
 3. Tipografia: serifa editorial (display) + Poppins (corpo), no lugar de
    Montserrat black itálico.
 4. "Prioridades" em lista numerada vertical, no lugar do bento de bandeiras.
 5. Seção de mensagem institucional (sem citação fabricada) no lugar da "Palavra".
 
-## Locked palette
-- Marfim (fundo): `#FBF7F1`; painel `#FFFFFF`; areia `#F3ECE3`
-- Vinho (acento principal, faixas, CTAs): `#6E1E3C`, escuro `#4E1129`
-- Framboesa (realce): `#B24C6B`
-- Ouro (detalhe fino, filetes, números): `#C9A24B`, claro `#E7CE8F`
-- Texto: `#2A2129`; apoio: `#7A6E72`
+## Locked palette (duas cores pedidas pela cliente)
+- **Raspberry** (destaque: títulos, faixas, CTAs, molduras): `#C2185B`,
+  escuro `#8F1246`, claro `#E14B83`
+- **Pale Sky** (cor clara: fundos, seções, números sobre o raspberry):
+  `#E0F2FE`, médio `#BFE4FB`
+- Neutros de apoio: branco `#FFFFFF` (painéis) · texto `#26121B` · apoio `#6F5560`
 
 ## Locked type
 - Display: serifa editorial (Georgia como fallback de sistema, sem depender de

@@ -1,7 +1,6 @@
 /* Identidade do site da vereadora Fernanda Bitenco. Mesma essência do site
- * político clássico, com identidade própria: dossiê editorial em vinho e ouro,
- * serifa de display, molduras com filete dourado. Diferente do azul-marinho e
- * do crachá de campanha do site do Wellington Neim. */
+ * político clássico, com identidade própria. Paleta de duas cores:
+ * Raspberry (#C2185B) como destaque e Pale Sky (#E0F2FE) como cor clara. */
 
 @font-face {
   font-family: "Poppins";
@@ -33,15 +32,15 @@
 }
 
 @theme {
-  --color-vinho: #6e1e3c;
-  --color-vinhoesc: #4e1129;
-  --color-framboesa: #b24c6b;
-  --color-ouro: #c9a24b;
-  --color-ouroclaro: #e7ce8f;
-  --color-marfim: #fbf7f1;
-  --color-areia: #f3ece3;
-  --color-texto: #2a2129;
-  --color-apoio: #7a6e72;
+  /* as duas cores pedidas */
+  --color-rasp: #c2185b;
+  --color-raspesc: #8f1246;
+  --color-raspclaro: #e14b83;
+  --color-palesky: #e0f2fe;
+  --color-paleskymed: #bfe4fb;
+  /* neutros de apoio (texto e superfícies) */
+  --color-texto: #26121b;
+  --color-apoio: #6f5560;
   --font-pop: "Poppins", "Segoe UI", -apple-system, sans-serif;
   --font-serifa: Georgia, "Times New Roman", "Playfair Display", serif;
 }
@@ -51,8 +50,8 @@ html {
 }
 
 ::selection {
-  background: #6e1e3c;
-  color: #fbf7f1;
+  background: #c2185b;
+  color: #e0f2fe;
 }
 
 /* Wordmark editorial (usado na navegação e no rodapé) */
@@ -64,7 +63,7 @@ html {
   line-height: 1;
 }
 
-/* Eyebrow com losango de ouro (assinatura editorial) */
+/* Eyebrow com losango raspberry (assinatura editorial) */
 .olho {
   display: inline-flex;
   align-items: center;
@@ -80,7 +79,7 @@ html {
   content: "";
   width: 7px;
   height: 7px;
-  background: var(--color-ouro);
+  background: var(--color-rasp);
   transform: rotate(45deg);
   flex: none;
 }
@@ -97,19 +96,19 @@ html {
   font-size: clamp(44px, 9vw, 104px);
 }
 
-/* Moldura de retrato reservada (placeholder no tamanho certo, com filete de
- * ouro). Substituir o conteúdo interno pela foto real da vereadora. */
+/* Moldura de retrato reservada (placeholder no tamanho certo, com filete
+ * raspberry). Substituir o conteúdo interno pela foto real da vereadora. */
 .moldura {
   position: relative;
-  border: 1px solid var(--color-ouro);
+  border: 1px solid var(--color-rasp);
   padding: 10px;
-  background: var(--color-areia);
+  background: var(--color-palesky);
 }
 .moldura::after {
   content: "";
   position: absolute;
   inset: 4px;
-  border: 1px solid rgba(201, 162, 75, 0.4);
+  border: 1px solid rgba(194, 24, 91, 0.35);
   pointer-events: none;
 }
 .moldura-vazia {
@@ -120,13 +119,13 @@ html {
   background:
     repeating-linear-gradient(
       -45deg,
-      rgba(110, 30, 60, 0.05) 0,
-      rgba(110, 30, 60, 0.05) 10px,
+      rgba(194, 24, 91, 0.08) 0,
+      rgba(194, 24, 91, 0.08) 10px,
       transparent 10px,
       transparent 20px
     ),
-    var(--color-areia);
-  color: var(--color-apoio);
+    var(--color-palesky);
+  color: var(--color-rasp);
   text-align: center;
   font-family: var(--font-pop);
   font-size: 12px;
@@ -140,53 +139,54 @@ html {
   height: auto;
 }
 
-/* Faixa vinho dos números */
-.faixa-vinho {
+/* Faixa raspberry dos números (números em pale sky: as duas cores juntas) */
+.faixa-rasp {
   position: relative;
   overflow: hidden;
   background:
     radial-gradient(
       130% 120% at 0% 0%,
-      rgba(178, 76, 107, 0.35) 0%,
-      rgba(78, 17, 41, 0) 55%
+      rgba(225, 75, 131, 0.45) 0%,
+      rgba(143, 18, 70, 0) 55%
     ),
-    linear-gradient(150deg, #7e2547 0%, #6e1e3c 45%, #4e1129 100%);
+    linear-gradient(150deg, #d63b78 0%, #c2185b 45%, #8f1246 100%);
 }
-.faixa-vinho::after {
+.faixa-rasp::after {
   content: "";
   position: absolute;
   inset: 0 0 auto 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--color-ouro), var(--color-ouroclaro));
+  background: var(--color-palesky);
 }
-.num-ouro {
+.num-clara {
   font-family: var(--font-serifa);
-  color: var(--color-ouroclaro);
+  color: var(--color-palesky);
+  text-shadow: 0 2px 16px rgba(224, 242, 254, 0.25);
 }
 
 /* Marcador numerado das prioridades (assinatura própria) */
 .prioridade {
   position: relative;
-  border-left: 2px solid var(--color-areia);
+  border-left: 2px solid var(--color-paleskymed);
   padding-left: 26px;
   transition: border-color 0.2s ease;
 }
 .prioridade:hover {
-  border-color: var(--color-ouro);
+  border-color: var(--color-rasp);
 }
 .prioridade-num {
   font-family: var(--font-serifa);
   font-style: italic;
   font-weight: 700;
-  color: var(--color-ouro);
+  color: var(--color-rasp);
   line-height: 1;
 }
 
-/* Aba de mensagem (vinho com filete de ouro) */
+/* Aba de mensagem (raspberry com filete pale sky) */
 .aba-mensagem {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(160deg, #6e1e3c 0%, #4e1129 100%);
+  background: linear-gradient(160deg, #c2185b 0%, #8f1246 100%);
 }
 .aba-mensagem::before {
   content: "";
@@ -196,7 +196,7 @@ html {
   width: 64px;
   height: 3px;
   transform: translateX(-50%);
-  background: var(--color-ouro);
+  background: var(--color-palesky);
 }
 
 /* Entrada suave (dispara no carregamento, nunca espera aparecer na tela) */
@@ -228,7 +228,7 @@ html {
 }
 .cartao-vivo:hover {
   transform: translateY(-3px);
-  box-shadow: 0 16px 34px rgba(78, 17, 41, 0.16);
+  box-shadow: 0 16px 34px rgba(143, 18, 70, 0.16);
 }
 
 .linha-atuacao .seta {
@@ -249,7 +249,7 @@ html {
   bottom: -4px;
   height: 2px;
   width: 100%;
-  background: var(--color-ouroclaro);
+  background: var(--color-rasp);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform 0.22s ease;

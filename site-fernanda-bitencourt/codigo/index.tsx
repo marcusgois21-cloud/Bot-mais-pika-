@@ -31,10 +31,10 @@ const DADOS_ESTRUTURADOS = {
 };
 
 /* Site oficial da vereadora Fernanda Bitenco (Fernanda Félix Bitencourt), de
- * Ponte Nova (MG). Mesma essência do site político clássico, com identidade
- * própria em vinho e ouro. Conteúdo baseado em fontes públicas (TSE, Câmara
- * Municipal, imprensa local); os blocos marcados como rascunho aguardam
- * confirmação da vereadora. */
+ * Ponte Nova (MG). Paleta de duas cores: Raspberry (#C2185B) e Pale Sky
+ * (#E0F2FE). Conteúdo baseado em fontes públicas (TSE, Câmara Municipal,
+ * imprensa local); os blocos marcados como rascunho aguardam confirmação da
+ * vereadora. */
 
 const INSTAGRAM = "https://www.instagram.com/vereadorafernandabitenco";
 const PORTAL_CAMARA = "https://www.pontenova.mg.leg.br/";
@@ -42,7 +42,7 @@ const PORTAL_CAMARA = "https://www.pontenova.mg.leg.br/";
 function Pagina() {
   const { noticias } = Route.useLoaderData();
   return (
-    <div className="min-h-dvh overflow-x-clip bg-marfim font-pop text-texto">
+    <div className="min-h-dvh overflow-x-clip bg-white font-pop text-texto">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(DADOS_ESTRUTURADOS) }}
@@ -69,14 +69,14 @@ function Navegacao() {
     <nav
       className={`fixed inset-x-0 top-0 z-50 border-b transition-all ${
         rolou
-          ? "border-areia bg-marfim/95 shadow-[0_4px_18px_rgba(78,17,41,0.10)] backdrop-blur"
-          : "border-transparent bg-marfim/80 backdrop-blur"
+          ? "border-paleskymed bg-white/95 shadow-[0_4px_18px_rgba(143,18,70,0.10)] backdrop-blur"
+          : "border-transparent bg-white/85 backdrop-blur"
       }`}
     >
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 md:px-8">
         <a href="#inicio" aria-label="Início" className="flex items-baseline gap-2">
-          <span className="marca-fern text-xl text-vinho md:text-2xl">Fernanda Bitenco</span>
-          <span className="hidden text-[11px] font-semibold uppercase tracking-[0.18em] text-ouro sm:inline">
+          <span className="marca-fern text-xl text-rasp md:text-2xl">Fernanda Bitenco</span>
+          <span className="hidden text-[11px] font-semibold uppercase tracking-[0.18em] text-rasp/70 sm:inline">
             Vereadora
           </span>
         </a>
@@ -88,7 +88,7 @@ function Navegacao() {
         </div>
         <a
           href="#contato"
-          className="text-[13px] font-semibold uppercase tracking-wide text-vinho md:hidden"
+          className="text-[13px] font-semibold uppercase tracking-wide text-rasp md:hidden"
         >
           Contato
         </a>
@@ -99,16 +99,16 @@ function Navegacao() {
 
 function Heroi() {
   return (
-    <header id="inicio" className="scroll-mt-16 bg-marfim pt-16">
+    <header id="inicio" className="scroll-mt-16 bg-palesky pt-16">
       <div className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-16 md:grid-cols-[1.15fr_0.85fr] md:px-8 md:py-24">
         <div>
-          <span className="olho olho-so surgir text-vinho">
+          <span className="olho olho-so surgir text-rasp">
             Vereadora · Ponte Nova (MG)
           </span>
           <h1 className="nome-grande surgir surgir-2 mt-6 text-texto">
             Fernanda
             <br />
-            <span className="text-vinho">Bitenco</span>
+            <span className="text-rasp">Bitenco</span>
           </h1>
           <p className="surgir surgir-3 mt-6 max-w-md leading-relaxed text-apoio">
             Ponte-novense de nascimento, no primeiro mandato na Câmara Municipal.
@@ -119,19 +119,19 @@ function Heroi() {
               href={INSTAGRAM}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-md bg-vinho px-7 py-3.5 text-sm font-bold uppercase tracking-wide text-marfim transition-colors hover:bg-vinhoesc active:translate-y-px"
+              className="rounded-md bg-rasp px-7 py-3.5 text-sm font-bold uppercase tracking-wide text-white transition-colors hover:bg-raspesc active:translate-y-px"
             >
               Fale comigo
             </a>
             <a
               href="#prioridades"
-              className="link-nav text-sm font-bold uppercase tracking-wide text-vinho"
+              className="link-nav text-sm font-bold uppercase tracking-wide text-rasp"
             >
               Conheça as prioridades
             </a>
           </div>
         </div>
-        <div className="moldura mx-auto w-full max-w-sm shadow-[0_20px_44px_rgba(78,17,41,0.18)]">
+        <div className="moldura mx-auto w-full max-w-sm shadow-[0_20px_44px_rgba(143,18,70,0.18)]">
           {/* Substituir esta moldura pela foto oficial da vereadora
               (proporção 4:5). Ex.: <img src="/assets/fernanda-hero.jpg" ... /> */}
           <div className="moldura-vazia">
@@ -155,15 +155,15 @@ const CARTOES_NUMEROS = [
 
 function Numeros() {
   return (
-    <section aria-label="Números do mandato" className="faixa-vinho">
+    <section aria-label="Números do mandato" className="faixa-rasp">
       <div className="mx-auto grid max-w-6xl grid-cols-2 gap-6 px-5 py-14 md:grid-cols-4 md:px-8 md:py-16">
         {CARTOES_NUMEROS.map((c) => (
           <div key={c.rotulo} className="text-center">
-            <p className="num-ouro text-4xl font-bold tracking-tight md:text-6xl">
+            <p className="num-clara text-4xl font-bold tracking-tight md:text-6xl">
               {c.numero}
             </p>
-            <span className="mx-auto mt-3 block h-px w-9 bg-ouro/60" />
-            <p className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-marfim/85 md:text-xs">
+            <span className="mx-auto mt-3 block h-px w-9 bg-palesky/60" />
+            <p className="mt-3 text-[11px] font-semibold uppercase tracking-wide text-white/85 md:text-xs">
               {c.rotulo}
             </p>
           </div>
@@ -175,15 +175,15 @@ function Numeros() {
 
 function QuemE() {
   return (
-    <section id="quem-e" className="scroll-mt-16 bg-marfim">
+    <section id="quem-e" className="scroll-mt-16 bg-white">
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-16 md:grid-cols-2 md:px-8 md:py-24">
-        <div className="moldura order-2 mx-auto w-full max-w-sm shadow-[0_18px_40px_rgba(78,17,41,0.16)] md:order-1">
+        <div className="moldura order-2 mx-auto w-full max-w-sm shadow-[0_18px_40px_rgba(143,18,70,0.16)] md:order-1">
           {/* Substituir pela foto da vereadora (proporção 4:5). */}
           <div className="moldura-vazia">Retrato · a colocar</div>
         </div>
         <div className="order-1 md:order-2">
-          <span className="olho olho-so text-vinho">Quem é</span>
-          <h2 className="mt-4 font-serifa text-3xl font-bold text-vinho md:text-4xl">
+          <span className="olho olho-so text-rasp">Quem é</span>
+          <h2 className="mt-4 font-serifa text-3xl font-bold text-rasp md:text-4xl">
             Fernanda Félix Bitencourt
           </h2>
           <p className="mt-5 leading-relaxed text-apoio">
@@ -193,7 +193,7 @@ function QuemE() {
             filiada ao AGIR, disputou pela primeira vez uma eleição e conquistou
             uma cadeira na Câmara Municipal.
           </p>
-          <p className="mt-4 font-semibold text-vinho">
+          <p className="mt-4 font-semibold text-rasp">
             2024 · Eleita vereadora com 530 votos
           </p>
           <p className="font-semibold text-texto">
@@ -205,7 +205,7 @@ function QuemE() {
           </p>
           <a
             href="#prioridades"
-            className="mt-8 inline-block rounded-md bg-vinho px-7 py-3.5 text-sm font-bold uppercase tracking-wide text-marfim transition-colors hover:bg-vinhoesc active:translate-y-px"
+            className="mt-8 inline-block rounded-md bg-rasp px-7 py-3.5 text-sm font-bold uppercase tracking-wide text-white transition-colors hover:bg-raspesc active:translate-y-px"
           >
             Ver as prioridades
           </a>
@@ -242,10 +242,10 @@ const PRIORIDADES = [
 
 function Prioridades() {
   return (
-    <section id="prioridades" className="scroll-mt-16 bg-areia">
+    <section id="prioridades" className="scroll-mt-16 bg-palesky">
       <div className="mx-auto max-w-5xl px-5 py-16 md:px-8 md:py-24">
-        <span className="olho olho-so text-vinho">Compromissos</span>
-        <h2 className="mt-4 font-serifa text-3xl font-bold text-vinho md:text-5xl">
+        <span className="olho olho-so text-rasp">Compromissos</span>
+        <h2 className="mt-4 font-serifa text-3xl font-bold text-rasp md:text-5xl">
           Prioridades do mandato
         </h2>
         <p className="mt-3 max-w-2xl leading-relaxed text-apoio">
@@ -274,14 +274,14 @@ function Mensagem() {
   return (
     <section aria-label="Mensagem" className="aba-mensagem">
       <div className="mx-auto max-w-4xl px-5 py-24 text-center md:px-8 md:py-32">
-        <p className="font-serifa text-2xl font-bold leading-snug text-marfim md:text-4xl md:leading-tight">
+        <p className="font-serifa text-2xl font-bold leading-snug text-white md:text-4xl md:leading-tight">
           Um mandato para servir Ponte Nova, com respeito às pessoas e trabalho
           de perto com a população.
         </p>
-        <div className="mx-auto mt-8 h-1 w-20 rounded-full bg-ouro" />
-        <p className="mt-6 text-sm font-bold uppercase tracking-[0.18em] text-ouroclaro">
+        <div className="mx-auto mt-8 h-1 w-20 rounded-full bg-palesky" />
+        <p className="mt-6 text-sm font-bold uppercase tracking-[0.18em] text-palesky">
           Fernanda Bitenco
-          <span className="mt-2 block text-xs font-normal normal-case tracking-normal text-marfim/60">
+          <span className="mt-2 block text-xs font-normal normal-case tracking-normal text-white/60">
             Vereadora de Ponte Nova · mandato 2025/2028
           </span>
         </p>
@@ -324,10 +324,10 @@ function NaMidia({ noticias }: { noticias: Noticia[] }) {
       }))
     : ATOS_CURADOS;
   return (
-    <section id="na-midia" className="scroll-mt-16 bg-marfim">
+    <section id="na-midia" className="scroll-mt-16 bg-white">
       <div className="mx-auto max-w-4xl px-5 py-16 md:px-8 md:py-24">
-        <span className="olho olho-so text-vinho">Atuação</span>
-        <h2 className="mt-4 font-serifa text-3xl font-bold text-vinho md:text-5xl">
+        <span className="olho olho-so text-rasp">Atuação</span>
+        <h2 className="mt-4 font-serifa text-3xl font-bold text-rasp md:text-5xl">
           Na Mídia
         </h2>
         <p className="mt-3 text-sm font-medium text-apoio">
@@ -342,18 +342,18 @@ function NaMidia({ noticias }: { noticias: Noticia[] }) {
               href={ato.fonte}
               target="_blank"
               rel="noopener noreferrer"
-              className="linha-atuacao cartao-vivo block rounded-xl border-l-4 border-ouro bg-white p-7 shadow-[0_12px_30px_rgba(78,17,41,0.10)]"
+              className="linha-atuacao cartao-vivo block rounded-xl border-l-4 border-rasp bg-white p-7 shadow-[0_12px_30px_rgba(143,18,70,0.10)]"
             >
               {ato.data && (
-                <p className="text-xs font-bold uppercase tracking-wide text-framboesa">
+                <p className="text-xs font-bold uppercase tracking-wide text-raspclaro">
                   {ato.data}
                 </p>
               )}
-              <h3 className="mt-1 font-serifa text-lg font-bold text-vinho">
+              <h3 className="mt-1 font-serifa text-lg font-bold text-rasp">
                 {ato.titulo}
               </h3>
               <p className="mt-2 text-sm leading-relaxed text-apoio">{ato.texto}</p>
-              <p className="mt-3 text-sm font-bold text-vinho">
+              <p className="mt-3 text-sm font-bold text-rasp">
                 Ler na fonte <span className="seta inline-block">→</span>
               </p>
             </a>
@@ -364,7 +364,7 @@ function NaMidia({ noticias }: { noticias: Noticia[] }) {
             href={PORTAL_CAMARA}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-block rounded-md border border-vinho px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-vinho transition-colors hover:bg-vinho hover:text-marfim active:translate-y-px"
+            className="inline-block rounded-md border border-rasp px-8 py-3.5 text-sm font-bold uppercase tracking-wide text-rasp transition-colors hover:bg-rasp hover:text-white active:translate-y-px"
           >
             Ver mais no portal da Câmara
           </a>
@@ -376,10 +376,10 @@ function NaMidia({ noticias }: { noticias: Noticia[] }) {
 
 function Contato() {
   return (
-    <section id="contato" className="scroll-mt-16 bg-areia">
+    <section id="contato" className="scroll-mt-16 bg-palesky">
       <div className="mx-auto max-w-6xl px-5 py-16 md:px-8 md:py-24">
-        <span className="olho olho-so text-vinho">Contato</span>
-        <h2 className="mt-4 font-serifa text-3xl font-bold text-vinho md:text-5xl">
+        <span className="olho olho-so text-rasp">Contato</span>
+        <h2 className="mt-4 font-serifa text-3xl font-bold text-rasp md:text-5xl">
           Fale com o gabinete
         </h2>
         <div className="mt-10 grid gap-10 md:grid-cols-2">
@@ -395,13 +395,13 @@ function Contato() {
             <p className="mt-3 leading-relaxed text-apoio">
               Atendimento de segunda a sexta, das 12h às 18h
             </p>
-            <p className="mt-3 font-semibold text-vinho">
-              <a className="hover:text-framboesa" href="tel:+553138193250">
+            <p className="mt-3 font-semibold text-rasp">
+              <a className="hover:text-raspclaro" href="tel:+553138193250">
                 (31) 3819-3250
               </a>
               <br />
               <a
-                className="break-all hover:text-framboesa"
+                className="break-all hover:text-raspclaro"
                 href="mailto:camara@pontenova.mg.leg.br"
               >
                 camara@pontenova.mg.leg.br
@@ -413,7 +413,7 @@ function Contato() {
               href={INSTAGRAM}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block rounded-md bg-vinho px-9 py-4 text-sm font-bold uppercase tracking-wide text-marfim transition-colors hover:bg-vinhoesc active:translate-y-px"
+              className="inline-block rounded-md bg-rasp px-9 py-4 text-sm font-bold uppercase tracking-wide text-white transition-colors hover:bg-raspesc active:translate-y-px"
             >
               Fale comigo
             </a>
@@ -423,7 +423,7 @@ function Contato() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram da vereadora"
-                className="cartao-vivo flex h-11 w-11 items-center justify-center rounded-lg bg-vinho text-marfim"
+                className="cartao-vivo flex h-11 w-11 items-center justify-center rounded-lg bg-rasp text-white"
               >
                 <svg
                   viewBox="0 0 24 24"
@@ -447,13 +447,13 @@ function Contato() {
 
 function Rodape() {
   return (
-    <footer className="bg-vinhoesc text-marfim">
+    <footer className="bg-raspesc text-white">
       <div className="mx-auto grid max-w-6xl gap-10 px-5 py-14 md:grid-cols-3 md:px-8">
         <div>
-          <h3 className="marca-fern border-b border-white/20 pb-2 text-xl text-marfim">
+          <h3 className="marca-fern border-b border-white/20 pb-2 text-xl text-white">
             Fernanda Bitenco
           </h3>
-          <p className="mt-4 text-sm leading-relaxed text-marfim/70">
+          <p className="mt-4 text-sm leading-relaxed text-white/70">
             Vereadora de Ponte Nova (MG)
             <br />
             Mandato 2025/2028
@@ -461,17 +461,17 @@ function Rodape() {
         </div>
         <div>
           <h3 className="border-b border-white/20 pb-2 text-lg font-bold">Links</h3>
-          <ul className="mt-4 space-y-2 text-sm text-marfim/80">
-            <li><a className="hover:text-ouroclaro" href="#inicio">Início</a></li>
-            <li><a className="hover:text-ouroclaro" href="#quem-e">Quem é</a></li>
-            <li><a className="hover:text-ouroclaro" href="#prioridades">Prioridades</a></li>
-            <li><a className="hover:text-ouroclaro" href="#na-midia">Na Mídia</a></li>
-            <li><a className="hover:text-ouroclaro" href="#contato">Contato</a></li>
+          <ul className="mt-4 space-y-2 text-sm text-white/80">
+            <li><a className="hover:text-palesky" href="#inicio">Início</a></li>
+            <li><a className="hover:text-palesky" href="#quem-e">Quem é</a></li>
+            <li><a className="hover:text-palesky" href="#prioridades">Prioridades</a></li>
+            <li><a className="hover:text-palesky" href="#na-midia">Na Mídia</a></li>
+            <li><a className="hover:text-palesky" href="#contato">Contato</a></li>
           </ul>
         </div>
         <div>
           <h3 className="border-b border-white/20 pb-2 text-lg font-bold">Contato</h3>
-          <p className="mt-4 text-sm leading-relaxed text-marfim/80">
+          <p className="mt-4 text-sm leading-relaxed text-white/80">
             Câmara Municipal de Ponte Nova
             <br />
             (31) 3819-3250
@@ -484,7 +484,7 @@ function Rodape() {
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Instagram da vereadora"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-marfim"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-lg bg-white/10 text-white"
             >
               <svg
                 viewBox="0 0 24 24"
@@ -502,15 +502,15 @@ function Rodape() {
         </div>
       </div>
       <div className="border-t border-white/15">
-        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-5 text-xs text-marfim/60 md:flex-row md:items-center md:justify-between md:px-8">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-5 py-5 text-xs text-white/60 md:flex-row md:items-center md:justify-between md:px-8">
           <p className="max-w-2xl">
             © 2026 Mandato da vereadora Fernanda Bitenco · Conteúdo baseado em
             fontes públicas: Câmara Municipal de Ponte Nova, Justiça Eleitoral e
             imprensa local.
           </p>
-          <p className="shrink-0 text-marfim/70">
+          <p className="shrink-0 text-white/70">
             Desenvolvido por{" "}
-            <span className="marca-fern text-marfim">Gois Group</span>
+            <span className="marca-fern text-white">Gois Group</span>
           </p>
         </div>
       </div>
