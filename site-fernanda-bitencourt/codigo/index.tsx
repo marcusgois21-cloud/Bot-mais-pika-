@@ -132,13 +132,12 @@ function Heroi() {
           </div>
         </div>
         <div className="moldura mx-auto w-full max-w-sm shadow-[0_20px_44px_rgba(143,18,70,0.18)]">
-          {/* Substituir esta moldura pela foto oficial da vereadora
-              (proporção 4:5). Ex.: <img src="/assets/fernanda-hero.jpg" ... /> */}
-          <div className="moldura-vazia">
-            Foto oficial
-            <br />
-            da vereadora
-          </div>
+          <img
+            src="/assets/fernanda-hero.jpg"
+            alt="Retrato da vereadora Fernanda Bitenco"
+            width={1309}
+            height={1580}
+          />
         </div>
       </div>
     </header>
@@ -178,8 +177,12 @@ function QuemE() {
     <section id="quem-e" className="scroll-mt-16 bg-white">
       <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-16 md:grid-cols-2 md:px-8 md:py-24">
         <div className="moldura order-2 mx-auto w-full max-w-sm shadow-[0_18px_40px_rgba(143,18,70,0.16)] md:order-1">
-          {/* Substituir pela foto da vereadora (proporção 4:5). */}
-          <div className="moldura-vazia">Retrato · a colocar</div>
+          <img
+            src="/assets/fernanda-hero.jpg"
+            alt="A vereadora Fernanda Bitenco no plenário da Câmara de Ponte Nova"
+            width={1309}
+            height={1580}
+          />
         </div>
         <div className="order-1 md:order-2">
           <span className="olho olho-so text-rasp">Quem é</span>
