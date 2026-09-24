@@ -1,0 +1,81 @@
+/* 03 · Como construímos (spec §8-03). Ritmo: do rótulo ao título 24 px, do título ao lead 32 px, do lead ao conteúdo 64 px. */
+
+/* título + etiqueta de versão na mesma linha de base */
+.cabeca {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: last baseline;
+  gap: var(--s-3) var(--s-4);
+}
+.titulo { min-width: 0; }
+.versao { color: var(--text-2); white-space: nowrap; }
+.vazio { display: none; }
+
+.lead { grid-column: 1 / -1; margin-top: var(--s-6); }
+.trilho { grid-column: 1 / -1; margin-top: var(--s-8); min-width: 0; }
+
+.fecho {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-4) var(--s-6);
+  margin-top: var(--s-8);
+}
+.fechoTexto { color: var(--text-2); }
+
+@media (min-width: 900px) {
+  .cabeca {
+    display: grid;
+    grid-template-columns: subgrid;
+    align-items: last baseline;
+  }
+  .titulo { grid-column: 1 / 7; }
+  .versao { grid-column: 7 / 9; }
+  /* vazio medido: colunas 9–12 ao lado do título (aparece rotulado no modo "Ver por dentro") */
+  .vazio { display: block; grid-column: 9 / 13; align-self: stretch; }
+  .lead { grid-column: 1 / 8; }
+  .trilho { margin-top: var(--s-8); }
+  .fecho { grid-column: 1 / 9; margin-top: var(--s-9); }
+}
+
+/* ── painel de uma fase: O que acontece · Artefatos · Passa quando ───── */
+.painel {
+  display: grid;
+  gap: var(--s-6);
+}
+.termo {
+  font-size: var(--fs-small);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.005em;
+  color: var(--text-3);
+  margin-bottom: var(--s-3);
+}
+.aconteceTexto { color: var(--text-1); }
+.lista { display: grid; gap: var(--s-2); color: var(--text-2); }
+.lista li { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: var(--s-3); }
+.travessao { color: var(--text-3); }
+.passa {
+  border: 1px solid var(--line-ui);
+  padding: var(--s-4) var(--s-5) var(--s-5);
+}
+.passaTexto { color: var(--text-1); }
+
+@media (min-width: 600px) {
+  .painel { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gutter); }
+  .acontece { grid-column: 1 / -1; }
+  /* a caixa sobe o próprio respiro: o rótulo "Passa quando" fica na linha do rótulo vizinho */
+  .passa { align-self: start; margin-top: calc(-1 * var(--s-4) - 1px); }
+}
+@media (min-width: 900px) {
+  .painel {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    column-gap: var(--gutter);
+    align-items: start;
+  }
+  .acontece { grid-column: 1 / 6; }
+  .artefatos { grid-column: 6 / 10; }
+  .passa { grid-column: 10 / 13; }
+}
