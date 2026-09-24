@@ -102,7 +102,7 @@
   --cw: calc(100cqw - 2 * var(--gx));
   --colw: calc((var(--cw) - (var(--cols) - 1) * var(--gutter)) / var(--cols));
   /* posição de repouso: borda esquerda da coluna --col-corte */
-  --x-rest: calc((var(--col-corte) - 1) * (var(--colw) + var(--gutter)));
+  --x-rest: calc((var(--col-corte) - 1) * (var(--colw) + var(--gutter)) + var(--corte-extra, 0px));
 }
 .estrutura { z-index: var(--z-estrutura); }
 .corte { z-index: var(--z-corte); }

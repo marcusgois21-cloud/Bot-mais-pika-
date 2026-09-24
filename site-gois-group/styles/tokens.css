@@ -51,7 +51,9 @@
   --s-7: 48px; --s-8: 64px; --s-9: 96px; --s-10: 128px; --s-11: 192px; --s-12: 256px;
   --section-y: clamp(6rem, 4rem + 8.889vw, 12rem);
   --cols: 4; --margin: 20px; --gutter: 12px; --content-max: 1520px; --header-h: 56px;
-  --col-corte: 4;
+  /* coluna onde o corte repousa (spec §6); em xs, depois da última coluna, 7 px dentro da margem —
+     assim a linha nunca cruza texto em repouso. --corte-extra é lido também pelo CutPlane. */
+  --col-corte: 5; --corte-extra: -5px;
 
   /* ── forma, profundidade, camadas ────────────────── */
   --radius: 0;
@@ -74,7 +76,7 @@
   --stagger: 40ms; --stagger-max: 240ms; --reveal-y: 16px;
 }
 
-@media (min-width: 600px) { :root { --cols: 8; --margin: 32px; --gutter: 16px; --col-corte: 7; } }
+@media (min-width: 600px) { :root { --cols: 8; --margin: 32px; --gutter: 16px; --col-corte: 8; --corte-extra: 0px; } }
 @media (min-width: 900px) { :root { --cols: 12; --margin: 40px; --gutter: 20px; --col-corte: 11; } }
 @media (min-width: 1280px) { :root { --margin: 64px; --gutter: 24px; --col-corte: 10; } }
 @media (min-width: 1680px) { :root { --margin: 80px; } }

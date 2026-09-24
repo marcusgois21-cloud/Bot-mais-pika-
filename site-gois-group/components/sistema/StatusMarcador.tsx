@@ -8,7 +8,7 @@ export function StatusMarcador({ status, tamanho = 10, className }: { status: Es
   const cor =
     status === 'em-operacao' ? 'var(--text-1)' : status === 'reservado' ? 'var(--line-ui)' : 'var(--text-2)'
   return (
-    <svg viewBox="0 0 10 10" width={tamanho} height={tamanho} style={{ color: cor }} className={className} aria-hidden="true" focusable="false" data-marcador={status}>
+    <svg viewBox="0 0 10 10" width={tamanho} height={tamanho} style={{ '--marcador-cor': cor, color: 'var(--marcador-cor-sobrescrita, var(--marcador-cor))' } as React.CSSProperties} className={className} aria-hidden="true" focusable="false" data-marcador={status}>
       {status === 'em-operacao' && <rect width="10" height="10" fill="currentColor" />}
       {status === 'em-construcao' && <rect x=".75" y=".75" width="8.5" height="8.5" fill="none" stroke="currentColor" strokeWidth="1.5" />}
       {status === 'em-evolucao' && (

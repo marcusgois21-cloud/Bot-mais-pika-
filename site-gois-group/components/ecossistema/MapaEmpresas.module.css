@@ -242,7 +242,7 @@
   .raiz[data-vista='mapa'] .reservadoTexto { font-size: var(--fs-small); white-space: nowrap; }
 
   /* seleção = hover = foco: marcador em giz, os outros nós a 40 % (§9.3) */
-  .raiz[data-vista='mapa'] .no[data-ativo] .marcador svg { color: var(--text-1) !important; }
+  .raiz[data-vista='mapa'] .no[data-ativo] .marcador svg { --marcador-cor-sobrescrita: var(--text-1); }
   .raiz[data-vista='mapa'][data-selecao] .no:not([data-ativo]) { opacity: 0.4; }
 }
 
@@ -363,5 +363,5 @@
   .raiz[data-vista='mapa'] :is(.reservado, [data-modelo])::after { border-top: 1px dotted CanvasText; }
   .raiz[data-vista='mapa'] .campo[data-primeiro-reservado] .centro::after { border-left: 1px dotted CanvasText; }
   .reservado .link { background: none; }
-  .marcador svg { color: CanvasText !important; }
+  .marcador svg { --marcador-cor-sobrescrita: CanvasText; }
 }

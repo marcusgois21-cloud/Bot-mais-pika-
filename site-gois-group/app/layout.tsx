@@ -56,7 +56,12 @@ const SCRIPT_HEAD = `(function(){var d=document.documentElement;d.classList.add(
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const email = known(site.email)
   return (
-    <html lang="pt-BR" className={`${archivo.variable} ${martian.variable}`} suppressHydrationWarning>
+    <html
+      lang="pt-BR"
+      className={`${archivo.variable} ${martian.variable}`}
+      data-scroll-behavior="smooth"
+      suppressHydrationWarning
+    >
       <head>
         <script dangerouslySetInnerHTML={{ __html: SCRIPT_HEAD }} />
         <JsonLd data={[organizationLd(), websiteLd()]} />

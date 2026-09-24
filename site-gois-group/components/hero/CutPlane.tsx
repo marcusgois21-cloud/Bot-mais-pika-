@@ -52,6 +52,7 @@ function medir(sec: HTMLElement): { m: Medidas; geo: Geo; extra: Extra } | null 
   const colunas = parseInt(cs.getPropertyValue('--cols'), 10) || 12
   const gutter = parseFloat(cs.columnGap) || 0
   const colunaCorte = parseInt(cs.getPropertyValue('--col-corte'), 10) || colunas
+  const extra = parseFloat(cs.getPropertyValue('--corte-extra')) || 0
   const ret = (el: Element | null | undefined): Retangulo => {
     const r = el ? el.getBoundingClientRect() : { left: ox, top: oy, width: 0, height: 0 }
     return { x: r.left - ox, y: r.top - oy, w: r.width, h: r.height }
@@ -100,7 +101,7 @@ function medir(sec: HTMLElement): { m: Medidas; geo: Geo; extra: Extra } | null 
       ctaSecundario: ret(alvo('cta2')),
       anotacoes: matchMedia(mq.lg).matches,
     },
-    geo: { esquerda: ox - s.left, naTela: ox, largura, colunas, gutter, repouso: Math.max(0, colunaCorte - 1) * (colW + gutter) },
+    geo: { esquerda: ox - s.left, naTela: ox, largura, colunas, gutter, repouso: Math.max(0, colunaCorte - 1) * (colW + gutter) + extra },
     extra: { peso: tcs.fontWeight, fs, lh, ctaH: cta.h, contraste: k ? contraste(k.color, k.backgroundColor) : null },
   }
 }
