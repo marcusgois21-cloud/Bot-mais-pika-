@@ -23,6 +23,8 @@ export type Medidas = {
   gutter: number
   /** --col-corte (1 = primeira coluna) */
   colunaCorte: number
+  /** --corte-extra: deslocamento do repouso em px (xs e sm: o corte repousa na margem direita) */
+  corteExtra?: number
   /** topo da caixa de conteúdo (topo do eyebrow) */
   topoConteudo: number
   /** altura do header fixo: o desenho útil começa abaixo dele */
@@ -31,10 +33,10 @@ export type Medidas = {
   eyebrow: Retangulo
   subtitulo: Retangulo
   cta: Retangulo
-  /** o link secundário também é área de toque (legenda: "a área de toque de cada botão") */
+  /** o link secundário também é área de toque (legenda: "as áreas de toque do botão e do link") */
   ctaSecundario?: Retangulo
-  /** anotações só em lg/xl */
-  anotacoes: boolean
+  /** anotações (--anotacoes): 0 = nenhuma (abaixo de lg) · 4 = sem a da versão (lg/xl baixo) · 5 = todas */
+  anotacoes: number
 }
 
 export type AnotacaoId = 'grade' | 'titulo' | 'leitura' | 'botao' | 'versao'
@@ -53,6 +55,10 @@ export type RotuloCota = {
   y: number
   /** onde o rótulo fica em relação ao ponto: acima (centrado em x, base em y) ou à direita (começa em x, centrado em y) */
   lado: 'acima' | 'direita'
+  /** o traço da cota e a sua extensão horizontal (x0…x1) — a cota só é desenhada com o rótulo */
+  d: string
+  x0: number
+  x1: number
 }
 
 export type Levantamento = {
@@ -66,7 +72,6 @@ export type Levantamento = {
   baselines: string
   leitura: string
   caixas: string
-  cotas: string
   rotulosCota: RotuloCota[]
   anotacoes: Anotacao[]
   /** x de início do texto das anotações (--x-rest + 16 px) e largura disponível até o fim do conteúdo */
@@ -245,33 +250,29 @@ export function levantamento(m: Medidas): Levantamento {
   const folga = m.topoConteudo - (m.topoFaixa + 40)
   const yB = m.topoConteudo - 14
   const xC = m.cta.x + m.cta.w + 12
-  let cotasD = ''
   const rotulosCota: RotuloCota[] = []
   if (margem >= 12) {
-    cotasD += cotaH(largura, W, yA)
-    rotulosCota.push({ id: 'margem', px: inteiro(margem), x: (largura + W) / 2, y: px(yA) - 6, lado: 'acima' })
+    rotulosCota.push({ id: 'margem', px: inteiro(margem), x: (largura + W) / 2, y: px(yA) - 6, lado: 'acima', d: cotaH(largura, W, yA), x0: largura, x1: W })
   }
   if (colunas > 1 && gB > gA && folga >= 48) {
-    cotasD += cotaH(gA, gB, yB)
     // o intervalo é estreito demais para o texto entre os traços: o rótulo vai à direita da cota
-    rotulosCota.push({ id: 'intervalo', px: inteiro(gutter), x: inteiro(gB) + 6, y: px(yB), lado: 'direita' })
+    rotulosCota.push({ id: 'intervalo', px: inteiro(gutter), x: inteiro(gB) + 6, y: px(yB), lado: 'direita', d: cotaH(gA, gB, yB), x0: gA, x1: gB })
   }
   if (m.cta.h > 0) {
-    cotasD += cotaV(xC, m.cta.y, m.cta.y + m.cta.h)
-    rotulosCota.push({ id: 'botao', px: inteiro(m.cta.h), x: px(xC), y: px(m.cta.y) - 6, lado: 'acima' })
+    rotulosCota.push({ id: 'botao', px: inteiro(m.cta.h), x: px(xC), y: px(m.cta.y) - 6, lado: 'acima', d: cotaV(xC, m.cta.y, m.cta.y + m.cta.h), x0: xC - 3, x1: xC + 4 })
   }
 
-  // 7. anotações (lg/xl): âncoras
-  const xRepouso = colX(Math.max(0, m.colunaCorte - 1))
+  // 7. anotações (lg/xl): âncoras — a da versão é a primeira a sair quando falta altura
+  const xRepouso = colX(Math.max(0, m.colunaCorte - 1)) + (m.corteExtra ?? 0)
   const anotacoes: Anotacao[] = []
-  if (m.anotacoes) {
+  if (m.anotacoes > 0) {
     const l1 = leituras[0]
     const l2 = leituras[1] ?? leituras[0]
     anotacoes.push({ id: 'grade', y: m.eyebrow.y, alinhar: 'topo' })
     if (l1) anotacoes.push({ id: 'titulo', y: l1.versal, alinhar: 'topo' })
     if (l2) anotacoes.push({ id: 'leitura', y: l2.base, alinhar: 'topo' })
     anotacoes.push({ id: 'botao', y: m.cta.y + m.cta.h / 2, alinhar: 'centro' })
-    anotacoes.push({ id: 'versao', y: H - 32, alinhar: 'base' })
+    if (m.anotacoes >= 5) anotacoes.push({ id: 'versao', y: H - 32, alinhar: 'base' })
   }
 
   return {
@@ -285,13 +286,16 @@ export function levantamento(m: Medidas): Levantamento {
     baselines: baselinesD,
     leitura: leituraD,
     caixas: caixasD,
-    cotas: cotasD,
     rotulosCota,
     anotacoes,
     anotacaoX: r1(xRepouso + 16),
     anotacaoLargura: Math.max(0, r1(largura - (xRepouso + 16))),
   }
 }
+
+/** Topo de uma caixa de altura h alinhada à âncora y. */
+export const topoAlinhado = (y: number, h: number, alinhar: Alinhar) =>
+  alinhar === 'base' ? y - h : alinhar === 'centro' ? y - h / 2 : y
 
 /**
  * Segunda passagem das anotações (spec §6.2, passo 6): se a anotação i sobrepõe a anterior, desce até
@@ -304,7 +308,7 @@ export function resolverColisoes(
   limiteInferior: number,
   limiteSuperior = 0,
 ): number[] {
-  const topos = itens.map(it => (it.alinhar === 'base' ? it.y - it.h : it.alinhar === 'centro' ? it.y - it.h / 2 : it.y))
+  const topos = itens.map(it => topoAlinhado(it.y, it.h, it.alinhar))
   for (let i = 1; i < topos.length; i++) {
     const minimo = topos[i - 1] + itens[i - 1].h + gap
     if (topos[i] < minimo) topos[i] = minimo
@@ -319,4 +323,23 @@ export function resolverColisoes(
 /** Mantém um rótulo de largura `w` dentro de [margem, W − margem], centrado em x quando cabe. */
 export function posicionarRotulo(x: number, w: number, W: number, margem = 4): number {
   return Math.min(Math.max(x - w / 2, margem), W - margem - w)
+}
+
+/**
+ * Em repouso, uma cota (traço + rótulo, de x0 a x1) ou aparece inteira na janela à direita do corte, a
+ * 4 px dele, ou fica inteira atrás da superfície (surge quando o corte se move). Nunca cortada pela linha.
+ */
+export function inteiraEmRepouso(x0: number, x1: number, xRepouso: number): boolean {
+  return x1 <= xRepouso || x0 >= xRepouso + 4
+}
+
+/**
+ * Traço de chamada (spec §6.2, passo 6): quando a colisão afasta a anotação mais de 24 px da posição da
+ * âncora, um colchete liga as duas no corredor livre entre o corte e as anotações (os 10 px antes do fundo
+ * delas, que recorta as linhas): sai do corte na altura da âncora, corre 4 px à direita dele e entra na
+ * anotação na altura da linha principal (15 px abaixo do topo: 4 de respiro + meia entrelinha).
+ */
+export function chamada(a: Anotacao, topo: number, h: number, xRepouso: number): string {
+  if (Math.abs(topo - topoAlinhado(a.alinhar === 'topo' ? a.y + 1 : a.y, h, a.alinhar)) <= 24) return ''
+  return `M${px(xRepouso + 1)} ${px(a.y)}H${px(xRepouso + 5)}V${px(topo + 15)}H${px(xRepouso + 9)}`
 }

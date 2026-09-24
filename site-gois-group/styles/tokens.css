@@ -53,9 +53,10 @@
   /* topo de toda página interna: rótulo e H1 no mesmo lugar em todas as rotas (48 → 96 px abaixo do header) */
   --pagina-topo: calc(var(--header-h) + clamp(3rem, 1.5rem + 4.444vw, 6rem));
   --cols: 4; --margin: 20px; --gutter: 12px; --content-max: 1520px; --header-h: 56px;
-  /* coluna onde o corte repousa (spec §6); em xs, depois da última coluna, 7 px dentro da margem —
-     assim a linha nunca cruza texto em repouso. --corte-extra é lido também pelo CutPlane. */
-  --col-corte: 5; --corte-extra: -5px;
+  /* coluna onde o corte repousa (spec §6); em xs e sm, depois da última coluna, 18 px antes da borda da
+     janela (a alça fica a 8 px dela) — assim a linha nunca cruza texto em repouso. --corte-extra é lido
+     também pelo CutPlane. */
+  --col-corte: 5; --corte-extra: -10px;
 
   /* ── forma, profundidade, camadas ────────────────── */
   --radius: 0;
@@ -78,8 +79,8 @@
   --stagger: 40ms; --stagger-max: 240ms; --reveal-y: 16px;
 }
 
-@media (min-width: 600px) { :root { --cols: 8; --margin: 32px; --gutter: 16px; --col-corte: 8; --corte-extra: 0px; } }
-@media (min-width: 900px) { :root { --cols: 12; --margin: 40px; --gutter: 20px; --col-corte: 11; } }
+@media (min-width: 600px) { :root { --cols: 8; --margin: 32px; --gutter: 16px; --col-corte: 9; --corte-extra: -2px; } }
+@media (min-width: 900px) { :root { --cols: 12; --margin: 40px; --gutter: 20px; --col-corte: 11; --corte-extra: 0px; } }
 @media (min-width: 1280px) { :root { --margin: 64px; --gutter: 24px; --col-corte: 10; } }
 @media (min-width: 1680px) { :root { --margin: 80px; } }
 

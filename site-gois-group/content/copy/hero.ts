@@ -6,7 +6,7 @@
  *
  * Os modelos recebem valores JÁ formatados em pt-BR (lib/formatar): este arquivo não tem imports,
  * para poder ser lido também pelo teste em Node de `components/hero/levantamento.ts`.
- * Unidades sempre separadas por U+00A0.
+ * Unidades sempre separadas por U+00A0; o travessão, preso à palavra anterior por U+00A0 (nunca abre linha).
  */
 
 const NBSP = ' '
@@ -18,7 +18,7 @@ export type HeroCopy = {
   subtitulo: string
   ctaPrimario: { rotulo: string; href: string }
   ctaSecundario: { rotulo: string; href: string }
-  /** Legenda de uma linha sob os CTAs (sem anotações): md/sm com cursor · xs com toque. */
+  /** Legenda de uma linha sob os CTAs (sem anotações): `toque` quando a rolagem move o corte (toque, abaixo de 900 px) · `tela` nos demais. */
   legenda: { tela: string; toque: string }
   dica: { cursor: string; teclado: string }
   corte: {
@@ -30,7 +30,7 @@ export type HeroCopy = {
     grade: { principal: (colunas: string) => string; tecnica: (colW: string, g: string, m: string) => string[] }
     titulo: { principal: string; tecnica: (peso: string, fs: string, lh: string) => string[] }
     leitura: { principal: string; tecnica: string[] }
-    botao: { principal: (h: string) => string; tecnica: (contraste: string | null) => string[] }
+    botao: { principal: (h: string) => string; tecnica: (contraste: string) => string[] }
     versao: { principal: (data: string) => string; tecnica: (hash: string) => string[] }
   }
   /** Rótulo de cota: valor em px, mono, caixa alta. */
@@ -38,14 +38,14 @@ export type HeroCopy = {
 }
 
 export const heroCopy: HeroCopy = {
-  eyebrow: 'Gois Group — desenvolvimento de sites, plataformas e sistemas web',
+  eyebrow: `Gois Group${NBSP}— desenvolvimento de sites, plataformas e sistemas web`,
   titulo: { construimos: 'Construímos', sites: 'sites', deDentro: 'de dentro', paraFora: 'para fora.' },
   subtitulo:
-    'Projetamos e desenvolvemos sites, plataformas e sistemas web para empresas. Começamos pela parte que não aparece — arquitetura, código, dados e velocidade — e desenhamos a que aparece com o mesmo rigor.',
+    `Projetamos e desenvolvemos sites, plataformas e sistemas web para empresas. Começamos pela parte que não aparece${NBSP}— arquitetura, código, dados e velocidade${NBSP}— e desenhamos a que aparece com o mesmo rigor.`,
   ctaPrimario: { rotulo: 'Iniciar um projeto', href: '/contato/?origem=home-hero' },
   ctaSecundario: { rotulo: 'Ver como construímos', href: '#metodo' },
   legenda: {
-    tela: 'À direita do corte: a grade, as linhas de leitura e a área de toque de cada botão desta página.',
+    tela: 'À direita do corte: a grade, as linhas de leitura e as áreas de toque do botão e do link acima.',
     toque: 'Role a página: o corte mostra este site por dentro.',
   },
   dica: {
@@ -72,9 +72,7 @@ export const heroCopy: HeroCopy = {
     },
     botao: {
       principal: h => `Botão principal: ${h}${NBSP}px de altura, fácil de acertar.`,
-      // sem medida possível, a linha mostra só a referência — nunca um número que não foi medido
-      tecnica: contraste =>
-        contraste ? [`CONTRASTE ${contraste}:1`, 'MÍNIMO WCAG AA 4,5:1'] : ['MÍNIMO WCAG AA 4,5:1'],
+      tecnica: contraste => [`CONTRASTE ${contraste}:1`, 'MÍNIMO WCAG AA 4,5:1'],
     },
     versao: {
       principal: data => `Esta versão do site foi publicada em ${data}.`,

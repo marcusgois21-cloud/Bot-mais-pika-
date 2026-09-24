@@ -38,8 +38,11 @@ export function Hero() {
           {c.eyebrow}
         </p>
         <h1 id="hero-titulo" className={`t-hero ${styles.titulo}`} data-dentro="Título principal">
+          {/* o espaço fica no mesmo nó de texto da palavra: separado (`{x} ` vira "x<!-- --> "), o Chromium o
+              descarta no nome acessível e o título seria lido "Construímossites" */}
           <span className={styles.ln}>
-            {c.titulo.construimos} <span className={styles.lnSm}>{c.titulo.sites}</span>
+            {`${c.titulo.construimos} `}
+            <span className={styles.lnSm}>{c.titulo.sites}</span>
           </span>{' '}
           <span className={styles.ln}>{c.titulo.deDentro}</span> <span className={styles.ln}>{c.titulo.paraFora}</span>
         </h1>
