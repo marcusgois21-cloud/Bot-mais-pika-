@@ -1,0 +1,60 @@
+.bloco { min-width: 0; max-width: 100%; }
+
+/* Região rolável rotulada (spec §14.5): só ela rola para os lados, nunca a página. */
+.regiao {
+  /* position: descendentes absolutos (ex.: texto só para leitor de tela) ficam presos à região */
+  position: relative;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-ui) transparent;
+}
+.regiao .tabela { min-width: 46rem; }
+
+.tabela {
+  width: 100%;
+  /* separate + spacing 0: as bordas acompanham a primeira coluna fixa (em collapse, ficariam para trás) */
+  border-collapse: separate;
+  border-spacing: 0;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+.fixa { table-layout: fixed; }
+
+.caption {
+  caption-side: top;
+  text-align: left;
+  padding-bottom: var(--s-4);
+}
+
+.tabela th,
+.tabela td {
+  text-align: left;
+  vertical-align: baseline;
+  padding: var(--s-4) var(--s-3) var(--s-4) 0;
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-small);
+  line-height: 1.5;
+  font-weight: 400;
+  overflow-wrap: break-word;
+}
+.tabela thead th {
+  padding-block: 0 var(--s-3);
+  border-top: 0;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.tabela tbody tr:last-child > * { border-bottom: 1px solid var(--line); }
+.tabela th[scope='row'] { padding-right: var(--s-5); }
+
+/* Primeira coluna fixa: o nome da métrica fica à vista enquanto os valores rolam. */
+.regiao thead th:first-child,
+.regiao th[scope='row'] {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--bg);
+}
+@media (max-width: 899px) {
+  .regiao thead th:first-child,
+  .regiao th[scope='row'] { border-right: 1px solid var(--line); }
+}
