@@ -1,0 +1,359 @@
+/* Trilho do Método Prumo (spec §10). Um DOM só; o layout muda só por CSS.
+   Base = trilho VERTICAL (mobile, tablet e desktop sem JS). ≥ 900 px com html.js = trilho HORIZONTAL. */
+
+.trilho { position: relative; }
+
+/* ── laço de retorno: só no trilho horizontal ─────────────────────────── */
+.laco, .lacoRotulo { display: none; }
+
+/* ── fases: trilho vertical na margem esquerda ────────────────────────── */
+.fases {
+  position: relative;
+  padding-left: 32px;
+}
+/* a linha do trilho (decorativa: a sequência já está na lista) */
+.fases::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--text-3);
+}
+/* a marca da fase aberta (Rubrica) só existe no trilho horizontal */
+.marca { display: none; }
+
+.fase {
+  position: relative;
+  padding-bottom: 24px;
+}
+.fase + .fase { margin-top: 8px; }
+
+.titulo { margin: 0; }
+
+.botao {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--s-4);
+  align-items: center;
+  width: 100%;
+  min-height: var(--target-min);
+  padding-block: 12px 16px;
+  text-align: left;
+  color: var(--text-1);
+  touch-action: manipulation;
+}
+.codigo, .nome, .verbo { grid-column: 1; display: block; }
+.codigo { color: var(--text-3); margin-bottom: 6px; }
+.nome { color: var(--text-1); transition: color var(--dur-2) linear; }
+.verbo { color: var(--text-3); margin-top: 2px; }
+.indicador {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  color: var(--text-2);
+  transition: transform var(--dur-2) var(--ease-cut);
+}
+/* o estado visual vem de data-aberta (correto desde o HTML do servidor); aria-expanded é para a tecnologia assistiva */
+.fase[data-aberta] .indicador { transform: rotate(180deg); }
+/* sem JS o botão não abre nem fecha nada: sem indicador */
+:global(html:not(.js)) .indicador { display: none; }
+
+/* critério de passagem, deitado sobre o trilho vertical: duas horizontais de 12 px, 6 px entre elas,
+   e o quadrado de 6 × 6 no meio (preenchido em giz) */
+.criterio {
+  position: absolute;
+  left: -38px;
+  bottom: 0;
+  width: 12px;
+  height: 8px;
+  border-block: 1px solid var(--text-3);
+}
+.quadrado {
+  position: absolute;
+  left: 3px;
+  top: 0;
+  width: 6px;
+  height: 6px;
+  border: 1px solid var(--text-3);
+  background: var(--bg);
+}
+.quadrado::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  background: var(--text-1);
+}
+
+/* painel: com JS, só os abertos aparecem; sem JS, todos */
+.painel { padding-block: 8px 24px; }
+:global(html.js) .painel:not([data-aberto]) { display: none; }
+.painel[data-aberto] { animation: painel-entra var(--dur-3) linear; }
+@keyframes painel-entra { from { opacity: 0; } }
+
+/* nota do laço (mobile e sem JS) */
+.nota {
+  display: flex;
+  align-items: baseline;
+  gap: 0 20px;
+  margin-top: var(--s-5);
+  color: var(--text-3);
+}
+.notaSeta {
+  flex-shrink: 0;
+  margin-left: -5.5px;
+  color: var(--line-ui);
+  transform: translateY(1px);
+}
+
+/* ─────────────────────────────────────────────────────────────────────── */
+/* ≥ 900 px, com JS: trilho horizontal de 1 px em seis trechos de 2 colunas */
+@media (min-width: 900px) {
+  :global(html.js) .trilho {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* rótulo do laço, à direita, sobre o laço */
+  :global(html.js) .lacoRotulo {
+    display: block;
+    justify-self: end;
+    margin-bottom: var(--s-3);
+    color: var(--text-3);
+    text-align: right;
+  }
+
+  /* laço de retorno: sobe 24 px no fim de P6, corre para a esquerda sobre o trilho e desce em P1.
+     Tracejado 6 4 em --line-ui; ponta de seta em SVG. */
+  :global(html.js) .laco {
+    display: block;
+    position: relative;
+    height: 24px;
+    margin-bottom: 6px;
+  }
+  .lacoSobe, .lacoCorre, .lacoDesce { position: absolute; display: block; }
+  .lacoSobe {
+    right: 3px;
+    bottom: 0;
+    width: 1px;
+    height: 24px;
+    background: repeating-linear-gradient(to top, var(--line-ui) 0 6px, transparent 6px 10px);
+  }
+  .lacoCorre {
+    left: 0;
+    right: 3px;
+    top: 0;
+    height: 1px;
+    background: repeating-linear-gradient(to left, var(--line-ui) 0 6px, transparent 6px 10px);
+  }
+  .lacoDesce {
+    left: 0;
+    top: 0;
+    width: 1px;
+    height: 17px;
+    background: repeating-linear-gradient(to bottom, var(--line-ui) 0 6px, transparent 6px 10px);
+  }
+  .lacoPonta {
+    position: absolute;
+    left: -3.5px;
+    bottom: 0;
+    color: var(--line-ui);
+  }
+
+  :global(html.js) .nota { display: none; }
+
+  /* Grade de 12 colunas × 3 linhas: botões · trilho (12 px) · painel.
+     Cada <li> ocupa a grade inteira (subgrid) e coloca o botão no seu trecho; os painéis caem todos na
+     mesma célula, embaixo. Os <li> se sobrepõem: só o botão e o painel aberto recebem ponteiro. */
+  :global(html.js) .fases {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    grid-template-rows: auto 12px auto;
+    column-gap: var(--gutter);
+    padding-left: 0;
+    container-type: inline-size;
+  }
+  :global(html.js) .fases::before {
+    position: static;
+    grid-row: 2;
+    grid-column: 1 / -1;
+    align-self: start;
+    width: auto;
+    height: 1px;
+    margin-top: 6px;
+    transform-origin: 0 50%;
+  }
+  /* a fase aberta: uma vertical de 1 px em Rubrica atravessa o critério de passagem da fase (é o corte e a
+     única Rubrica da seção). Cada fase tem a sua; só a da fase aberta aparece (crossfade em --dur-3).
+     Posicionada pela grade, não por transform: fica no pixel, nítida em qualquer densidade de tela. */
+  :global(html.js) .marca {
+    display: block;
+    grid-row: 1 / 3;
+    justify-self: end;
+    width: 1px;
+    margin-right: 3px;
+    margin-bottom: -20px;
+    background: var(--accent);
+    pointer-events: none;
+    /* cresce a partir do trilho (6 px abaixo do topo da faixa de 12 px; a marca desce 20 px além dela) */
+    transform-origin: 50% calc(100% - 26px);
+    opacity: 0;
+    transition: opacity var(--dur-3) linear;
+  }
+  :global(html.js) .fase[data-aberta] .marca { opacity: 1; }
+
+  :global(html.js) .fase {
+    grid-row: 1 / -1;
+    grid-column: 1 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-template-rows: subgrid;
+    padding: 0;
+    margin: 0;
+    pointer-events: none;
+    z-index: 1;
+  }
+  :global(html.js) .titulo { grid-row: 1; pointer-events: auto; min-width: 0; }
+  :global(html.js) .fase:nth-child(1) :is(.titulo, .marca, .criterio) { grid-column: 1 / span 2; }
+  :global(html.js) .fase:nth-child(2) :is(.titulo, .marca, .criterio) { grid-column: 3 / span 2; }
+  :global(html.js) .fase:nth-child(3) :is(.titulo, .marca, .criterio) { grid-column: 5 / span 2; }
+  :global(html.js) .fase:nth-child(4) :is(.titulo, .marca, .criterio) { grid-column: 7 / span 2; }
+  :global(html.js) .fase:nth-child(5) :is(.titulo, .marca, .criterio) { grid-column: 9 / span 2; }
+  :global(html.js) .fase:nth-child(6) :is(.titulo, .marca, .criterio) { grid-column: 11 / span 2; }
+
+  :global(html.js) .botao {
+    display: block;
+    height: 100%;
+    padding-block: 12px 20px;
+    padding-right: 16px;
+  }
+  :global(html.js) .codigo { color: var(--text-3); transition: color var(--dur-2) linear; }
+  /* O nome cabe no seu trecho de 2 colunas, antes da vertical do critério: o maior nome ("Lançamento")
+     mede 5,6 em em Archivo 540. Entre 900 e ~1180 px o --fs-title não cabe; ali o nome acompanha a
+     largura do trecho (100cqi = largura do trilho; trecho = (100cqi − 5 gutters) / 6). */
+  :global(html.js) .nome {
+    color: var(--text-3);
+    white-space: nowrap;
+    font-size: min(var(--fs-title), calc(((100cqi - 5 * var(--gutter)) / 6 - 12px) / 5.65));
+  }
+  :global(html.js) .indicador { display: none; }
+  @media (hover: hover) {
+    :global(html.js) .fase:not([data-aberta]) .botao:hover .nome,
+    :global(html.js) .fase:not([data-aberta]) .botao:hover .codigo { color: var(--text-2); }
+  }
+  :global(html.js) .fase[data-aberta] .nome { color: var(--text-1); }
+  :global(html.js) .fase[data-aberta] .codigo { color: var(--text-2); }
+  :global(html.js) .botao[aria-disabled='true'] { cursor: default; }
+
+  /* critério de passagem: duas verticais de 1 × 12 px, 6 px entre elas, quadrado 6 × 6 no meio */
+  :global(html.js) .criterio {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    grid-row: 2;
+    justify-self: end;
+    width: 8px;
+    height: 12px;
+    border-block: 0;
+    border-inline: 1px solid var(--text-3);
+  }
+  :global(html.js) .quadrado { left: 0; top: 3px; }
+
+  /* painel da fase aberta: todos na mesma célula; crossfade em --dur-3 */
+  :global(html.js) .painel {
+    grid-row: 3;
+    grid-column: 1 / -1;
+    padding-block: var(--s-8) 0;
+    pointer-events: auto;
+    animation: none;
+    opacity: 1;
+    visibility: visible;
+    transition: opacity var(--dur-3) linear, visibility 0s linear 0s;
+  }
+  :global(html.js) .painel:not([data-aberto]) {
+    display: block;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity var(--dur-3) linear, visibility 0s linear var(--dur-3);
+  }
+}
+
+/* Entrada, uma vez só (spec §10.3): a linha desenha da esquerda para a direita (scaleX, --dur-7,
+   --ease-draw); cada botão entra quando a linha passa (720 · (i + 1) / 6 − 120 ms); cada critério se
+   preenche em --dur-1 quando é alcançado (tempos resolvidos na curva --ease-draw); o laço desenha por
+   último (480 ms). Todo o texto fica visível em até 720 ms. Reduced motion ou já visível no carregamento:
+   estado final imediato. As capas do laço (::after em --bg) encolhem por transform, sem repintar traço. */
+@media (min-width: 900px) and (prefers-reduced-motion: no-preference) {
+  :global(html.js) .trilho:not([data-revelado]) .fases::before { transform: scaleX(0); }
+  :global(html.js) .trilho:not([data-revelado]) :is(.titulo, .lacoRotulo) { opacity: 0; }
+  :global(html.js) .trilho:not([data-revelado]) .marca { transform: scaleY(0); }
+  :global(html.js) .trilho:not([data-revelado]) .painel > * { opacity: 0; }
+  :global(html.js) .trilho:not([data-revelado]) .quadrado::after { opacity: 0; }
+  :global(html.js) .trilho:not([data-revelado]) :is(.lacoSobe, .lacoCorre, .lacoDesce)::after,
+  :global(html.js) .trilho[data-revelado=''] :is(.lacoSobe, .lacoCorre, .lacoDesce)::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--bg);
+  }
+  :global(html.js) .trilho:not([data-revelado]) .lacoPonta { opacity: 0; }
+
+  :global(html.js) .trilho[data-revelado=''] .fases::before {
+    animation: trilho-linha var(--dur-7) var(--ease-draw) backwards;
+  }
+  :global(html.js) .trilho[data-revelado=''] .titulo { animation: trilho-aparece 120ms linear backwards; }
+  :global(html.js) .trilho[data-revelado=''] .fase:nth-child(2) .titulo { animation-delay: 120ms; }
+  :global(html.js) .trilho[data-revelado=''] .fase:nth-child(3) .titulo { animation-delay: 240ms; }
+  :global(html.js) .trilho[data-revelado=''] .fase:nth-child(4) .titulo { animation-delay: 360ms; }
+  :global(html.js) .trilho[data-revelado=''] .fase:nth-child(5) .titulo { animation-delay: 480ms; }
+  :global(html.js) .trilho[data-revelado=''] .fase:nth-child(6) .titulo { animation-delay: 600ms; }
+
+  :global(html.js) .trilho[data-revelado=''] .quadrado::after { animation: trilho-aparece var(--dur-1) linear backwards; }
+  :global(html.js) .trilho[data-revelado=''] .fase:nth-child(1) .quadrado::after { animation-delay: 190ms; }
+  :global(html.js) .trilho[data-revelado=''] .fase:nth-child(2) .quadrado::after { animation-delay: 230ms; }
+  :global(html.js) .trilho[data-revelado=''] .fase:nth-child(3) .quadrado::after { animation-delay: 265ms; }
+  :global(html.js) .trilho[data-revelado=''] .fase:nth-child(4) .quadrado::after { animation-delay: 305ms; }
+  :global(html.js) .trilho[data-revelado=''] .fase:nth-child(5) .quadrado::after { animation-delay: 380ms; }
+  :global(html.js) .trilho[data-revelado=''] .fase:nth-child(6) .quadrado::after { animation-delay: 630ms; }
+
+  /* a Rubrica corta o critério da fase aberta (P1) quando a linha o alcança */
+  :global(html.js) .trilho[data-revelado=''] .marca {
+    animation: trilho-corta var(--dur-2) var(--ease-cut) 190ms backwards;
+  }
+  :global(html.js) .trilho[data-revelado=''] .painel > * { animation: trilho-aparece var(--dur-3) linear 240ms backwards; }
+  :global(html.js) .trilho[data-revelado=''] .lacoRotulo { animation: trilho-aparece 120ms linear 600ms backwards; }
+
+  :global(html.js) .trilho[data-revelado=''] .lacoSobe::after {
+    transform-origin: 50% 0;
+    animation: trilho-cobre-y 20ms linear 720ms both;
+  }
+  :global(html.js) .trilho[data-revelado=''] .lacoCorre::after {
+    transform-origin: 0 50%;
+    animation: trilho-cobre-x 420ms linear 740ms both;
+  }
+  :global(html.js) .trilho[data-revelado=''] .lacoDesce::after {
+    transform-origin: 50% 100%;
+    animation: trilho-cobre-y 20ms linear 1160ms both;
+  }
+  :global(html.js) .trilho[data-revelado=''] .lacoPonta { animation: trilho-aparece 20ms linear 1180ms backwards; }
+}
+@keyframes trilho-linha { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes trilho-aparece { from { opacity: 0; } to { opacity: 1; } }
+@keyframes trilho-corta { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes trilho-cobre-x { from { transform: scaleX(1); } to { transform: scaleX(0); } }
+@keyframes trilho-cobre-y { from { transform: scaleY(1); } to { transform: scaleY(0); } }
+
+@media (forced-colors: active) {
+  .fases::before, .criterio, .quadrado { forced-color-adjust: none; }
+  .fases::before { background: CanvasText; }
+  .criterio { border-color: CanvasText; }
+  .quadrado { border-color: CanvasText; background: Canvas; }
+  .quadrado::after { background: CanvasText; }
+  :global(html.js) .marca { forced-color-adjust: none; background: Highlight; }
+  /* o tracejado do laço é desenhado com gradientes, que o modo de cores forçadas remove */
+  .lacoSobe, .lacoCorre, .lacoDesce { forced-color-adjust: none; }
+  .lacoSobe { background: repeating-linear-gradient(to top, CanvasText 0 6px, transparent 6px 10px); }
+  .lacoCorre { background: repeating-linear-gradient(to left, CanvasText 0 6px, transparent 6px 10px); }
+  .lacoDesce { background: repeating-linear-gradient(to bottom, CanvasText 0 6px, transparent 6px 10px); }
+}
