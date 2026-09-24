@@ -1,0 +1,46 @@
+/* /empresas/ (spec §14.1) */
+.topo { padding-top: calc(var(--header-h) + clamp(3rem, 1.5rem + 4.444vw, 6rem)); }
+
+.cabeca { grid-column: 1 / -1; min-width: 0; }
+.lead { margin-top: var(--s-6); }
+.estado { margin-top: var(--s-5); }
+.vazio { display: none; }
+.mapa { grid-column: 1 / -1; min-width: 0; margin-top: var(--s-8); }
+@media (min-width: 900px) {
+  .cabeca { grid-column: 1 / 9; }
+  .vazio { display: block; grid-column: 9 / -1; }
+}
+
+/* ── O que cada empresa publicada aqui terá ─────────────────────────────── */
+.padraoTitulo { grid-column: 1 / -1; }
+.padrao {
+  grid-column: 1 / -1;
+  margin-top: var(--s-7);
+  border-bottom: 1px solid var(--line);
+}
+.padraoItem {
+  display: grid;
+  grid-template-columns: 2.5em minmax(0, 1fr);
+  align-items: baseline;
+  column-gap: var(--s-4);
+  padding-block: var(--s-4);
+  border-top: 1px solid var(--line);
+}
+.indice { line-height: 1; }
+.padraoTexto { font-size: var(--fs-lead); line-height: 1.4; letter-spacing: -0.005em; color: var(--text-1); }
+@media (min-width: 900px) {
+  .padraoTitulo { grid-column: 1 / 5; align-self: start; }
+  .padrao { grid-column: 6 / -1; margin-top: 0; }
+  .padraoItem { padding-block: var(--s-5); }
+}
+
+/* ── fecho ───────────────────────────────────────────────────────────────── */
+.fecho { grid-column: 1 / -1; }
+.fechoFrase { display: block; }
+.fechoCta { grid-column: 1 / -1; margin-top: var(--s-6); }
+.fechoVazio { display: none; }
+@media (min-width: 900px) {
+  .fecho { grid-column: 1 / 8; }
+  .fechoCta { grid-row: 2; }
+  .fechoVazio { display: block; grid-column: 9 / -1; grid-row: 1 / span 2; }
+}

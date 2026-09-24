@@ -1,0 +1,52 @@
+/* Revelações (spec §8, regras comuns). Outros valores (ex.: "trilho") só recebem data-revelado;
+   a coreografia fica no módulo do componente.
+   Só escondem sob html.revelar, que o RevealObserver liga DEPOIS da primeira varredura (quando tudo o que
+   já está na tela foi marcado como 'imediato'). Sem JS, com o bundle bloqueado, antes da hidratação ou com
+   movimento reduzido, nada fica oculto. data-revelado='' anima; 'imediato' é o estado final direto. */
+@media (prefers-reduced-motion: no-preference) {
+  html.revelar [data-reveal='corte']:not([data-revelado]) { clip-path: inset(0 100% 0 0); }
+  html.revelar [data-reveal='corte'][data-revelado=''] {
+    animation: revela-corte var(--dur-5) var(--ease-cut) both;
+    animation-delay: var(--reveal-delay, 0ms);
+  }
+  html.revelar [data-reveal='fade']:not([data-revelado]) { opacity: 0; transform: translateY(var(--reveal-y)); }
+  html.revelar [data-reveal='fade'][data-revelado=''] {
+    animation: revela-fade 360ms var(--ease-cut) both;
+    animation-delay: var(--reveal-delay, 80ms);
+  }
+  html.revelar [data-reveal='linha']:not([data-revelado]) { transform: scaleX(0); transform-origin: 0 50%; }
+  html.revelar [data-reveal='linha'][data-revelado=''] {
+    transform-origin: 0 50%;
+    animation: revela-linha 480ms var(--ease-draw) both;
+    animation-delay: var(--reveal-delay, 0ms);
+  }
+}
+@keyframes revela-corte { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+@keyframes revela-fade { from { opacity: 0; transform: translateY(var(--reveal-y)); } to { opacity: 1; transform: none; } }
+@keyframes revela-linha { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* Transições entre páginas (spec §16): a página nova entra por corte sobre a antiga, que fica parada.
+   240 ms (--dur-3) para caber em ≤ 400 ms percebidos com a renderização da rota. Voltar/avançar do
+   navegador também corta, na direção inversa ao voltar (NavigationListener, com a Navigation API). */
+@view-transition { navigation: auto; }
+::view-transition-old(root) { animation: none; }
+::view-transition-new(root) { animation: vt-corte var(--dur-3) var(--ease-move) both; }
+html[data-vt-dir='back']::view-transition-new(root) { animation-name: vt-corte-volta; }
+@keyframes vt-corte { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+@keyframes vt-corte-volta { from { clip-path: inset(0 0 0 100%); } to { clip-path: inset(0); } }
+::view-transition-group(*) { animation-duration: var(--dur-3); animation-timing-function: var(--ease-move); }
+
+/* O header não se move: nome global (fora do CSS Modules), sem animação, e parado durante a navegação.
+   Recolhido ou com o menu aberto no clique, ele entra no instantâneo da página e chega junto com ela. */
+.site-header { view-transition-name: site-header; }
+html[data-vt-header='raiz'] .site-header { view-transition-name: none; }
+html[data-vt-dir] .site-header { transition: none; }
+::view-transition-group(site-header) { animation: none; }
+::view-transition-old(site-header) { animation: none; opacity: 0; }
+::view-transition-new(site-header) { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-new(root), html[data-vt-dir='back']::view-transition-new(root) { animation: vt-fade 120ms linear both; }
+  ::view-transition-group(*) { animation-duration: 0ms; }
+}
+@keyframes vt-fade { from { opacity: 0; } }

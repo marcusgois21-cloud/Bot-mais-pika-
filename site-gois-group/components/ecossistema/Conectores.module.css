@@ -1,0 +1,132 @@
+/* Conectores medidos (spec §9.2) e caminho selecionado em Rubrica (§9.3, §4.1 uso 2). */
+.conectores {
+  display: none;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  overflow: visible;
+  pointer-events: none;
+  fill: none;
+}
+@media (min-width: 900px) {
+  [data-vista='mapa'] .conectores { display: block; }
+}
+
+/* contínuo = empresa publicada; pontilhado 1 2 = espaço reservado ou empresa-modelo (§7.1) */
+.conectores [data-base] {
+  stroke: var(--line-ui);
+  stroke-width: 1;
+  stroke-linejoin: miter;
+  transition: opacity var(--dur-3) linear;
+}
+.conectores [data-pontilhado] [data-base] { stroke-dasharray: 1 2; }
+.conectores[data-selecao] [data-conector]:not([data-ativo]) [data-base] { opacity: 0.4; }
+
+/* O corte: redesenha o caminho do nó até o centro. Só transform/opacity:
+   cada trecho cresce a partir do anterior, em sequência, dentro de --dur-3. */
+.conectores [data-corte] {
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  stroke-linecap: square;
+  transform-box: fill-box;
+  opacity: 0;
+  transition:
+    opacity var(--dur-2) linear,
+    transform 0s linear var(--dur-2);
+}
+.conectores [data-corte='v'] { transform: scaleY(0); }
+.conectores [data-corte='h'] { transform: scaleX(0); }
+.conectores [data-ativo] [data-corte] {
+  opacity: 1;
+  transform: none;
+  transition: transform calc(var(--dur-3) / var(--n, 1)) var(--ease-draw) calc(var(--dur-3) / var(--n, 1) * var(--i, 0));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .conectores [data-corte],
+  .conectores [data-ativo] [data-corte],
+  .conectores [data-base] { transition: none; }
+}
+@media (forced-colors: active) {
+  .conectores [data-base] { stroke: CanvasText; }
+  .conectores [data-corte] { stroke: Highlight; }
+}
+
+/* ── alternador Mapa · Lista e filtros (/empresas/) ──────────────────────── */
+.controles {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--s-5) var(--s-7);
+  margin-bottom: var(--s-7);
+  min-width: 0;
+}
+.alternador { display: inline-flex; }
+.botao {
+  min-width: 88px;
+  height: var(--target-min);
+  padding: 0 var(--s-5);
+  border: 1px solid var(--line-ui);
+  font-size: var(--fs-small);
+  font-weight: 560;
+  color: var(--text-2);
+  text-align: center;
+  transition:
+    background-color var(--dur-2) linear,
+    color var(--dur-2) linear,
+    border-color var(--dur-2) linear;
+}
+.botao + .botao { margin-left: -1px; }
+.botao[aria-pressed='true'] { background: var(--btn-bg); border-color: var(--btn-bg); color: var(--btn-fg); position: relative; }
+@media (hover: hover) {
+  .botao[aria-pressed='false']:hover { color: var(--text-1); border-color: var(--text-1); position: relative; }
+}
+.botao:focus-visible { position: relative; z-index: 1; }
+
+.filtro { border: 0; padding: 0; margin: 0; min-width: 0; }
+.legenda { padding: 0; margin-bottom: var(--s-2); }
+.opcoes { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+.opcao {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-height: var(--target-min);
+  padding: 0 var(--s-4) 0 var(--s-3);
+  border: 1px solid var(--line-ui);
+  font-size: var(--fs-small);
+  color: var(--text-2);
+  cursor: pointer;
+  transition:
+    border-color var(--dur-2) linear,
+    color var(--dur-2) linear;
+}
+.opcao:has(:checked) { border-color: var(--text-1); color: var(--text-1); }
+.opcao:has(:focus-visible) { outline: 2px solid var(--focus-ring); outline-offset: 3px; }
+@media (hover: hover) {
+  .opcao:hover { color: var(--text-1); }
+}
+.caixa {
+  appearance: none;
+  flex-shrink: 0;
+  width: 12px;
+  height: 12px;
+  margin: 0;
+  border: 1px solid var(--line-ui);
+  border-radius: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.caixa:checked { background: var(--text-1); border-color: var(--text-1); }
+.caixa:focus-visible { outline: none; }
+.contagem { margin-left: auto; min-height: var(--target-min); display: inline-flex; align-items: center; }
+/* alternador e contagem na primeira linha; os grupos de filtro na segunda (a ordem do DOM segue a leitura) */
+.contagem { order: 1; }
+.quebra { order: 2; flex-basis: 100%; height: 0; }
+.filtro { order: 3; }
+@media (forced-colors: active) {
+  .caixa { border-color: CanvasText; }
+  .caixa:checked { background: CanvasText; }
+}

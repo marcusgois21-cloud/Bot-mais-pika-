@@ -1,0 +1,23 @@
+.numero { display: grid; align-content: start; gap: var(--s-3); min-width: 0; }
+.etiqueta { min-height: 1.3em; }
+.valor { display: flex; align-items: baseline; gap: 0.12em; color: var(--text-1); }
+.unidade { color: var(--text-2); }
+.unidade:global(.t-label) { text-transform: none; }
+/* Largura fixa de 2,4 em no tamanho do numeral; altura = versal (0,686 em) + 0,2 em. */
+.quadro {
+  display: grid;
+  place-items: center;
+  width: 2.4em;
+  height: calc(0.686em + 0.2em);
+  outline: 1px dotted var(--line-ui);
+  outline-offset: -1px;
+  background-image: var(--hachura);
+}
+.traco { font-size: 0.4em; color: var(--text-3); line-height: 1; }
+.rotulo { margin-top: var(--s-2); }
+.definicao { max-width: 36ch; }
+.fonte { margin-top: var(--s-1); }
+.instrucao { color: var(--text-2); }
+@media (forced-colors: active) {
+  .quadro { outline-color: CanvasText; background-image: none; }
+}

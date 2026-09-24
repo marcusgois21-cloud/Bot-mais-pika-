@@ -1,0 +1,100 @@
+/* 07 · Por que a Gois Group (spec §8-07). Desktop 12 colunas; tablet 8; mobile 4. */
+.grade { align-items: start; }
+
+.titulo { grid-column: 1 / -1; }
+@media (min-width: 900px) { .titulo { grid-column: 1 / 10; } }
+
+/* Vazio medido: colunas 1–4 ao lado da introdução. */
+.vazio { display: none; }
+.intro { grid-column: 1 / -1; margin-top: var(--s-6); }
+@media (min-width: 600px) { .intro { grid-column: 1 / 8; } }
+@media (min-width: 900px) {
+  .vazio { display: block; grid-column: 1 / 5; align-self: stretch; margin-top: var(--s-6); }
+  .intro { grid-column: 5 / 11; }
+}
+
+/* ── A · compromissos ─────────────────────────────── */
+.compromissos {
+  grid-column: 1 / -1;
+  margin-top: var(--s-8);
+  border-bottom: 1px solid var(--line);
+}
+.compromisso {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: var(--s-3);
+  align-items: start;
+  padding-block: var(--s-5) var(--s-6);
+  border-top: 1px solid var(--line);
+}
+.termo, .explicacao, .verificar, .lcp { grid-column: 1 / -1; }
+.explicacao { max-width: 46ch; }
+.verificar { display: grid; gap: var(--s-1); margin-top: var(--s-2); max-width: 40ch; }
+.verificar dt { font-weight: 500; }
+.verificar dd { color: var(--text-1); }
+.lcp { display: grid; gap: var(--s-1); margin-top: var(--s-3); }
+.unidade, .unidade:global(.t-label) { text-transform: none; }
+.lcpValor {
+  font-size: var(--fs-display-m);
+  font-weight: 560;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+@media (min-width: 600px) {
+  .termo { grid-column: 1 / 4; padding-right: var(--s-4); }
+  .explicacao, .verificar, .lcp { grid-column: 4 / 9; }
+}
+@media (min-width: 900px) {
+  .compromisso { padding-block: var(--s-6) var(--s-7); }
+  .termo { grid-column: 1 / 5; padding-right: var(--s-6); }
+  .explicacao { grid-column: 5 / 9; padding-right: var(--s-4); }
+  .verificar { grid-column: 9 / 13; margin-top: 0; }
+  .lcp { grid-column: 5 / 9; }
+}
+
+/* ── B · a prova ───────────────────────────────────── */
+.prova {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  column-gap: var(--gutter);
+  align-items: start;
+  margin-top: var(--s-9);
+}
+@media (min-width: 900px) { .prova { margin-top: var(--s-10); } }
+
+.provaTitulo, .provaIntro, .medicoes, .legenda, .acoes, .outros { grid-column: 1 / -1; }
+.provaIntro { margin-top: var(--s-6); }
+.medicoes { margin-top: var(--s-8); }
+.legenda { margin-top: var(--s-5); max-width: 64ch; }
+@media (min-width: 600px) {
+  .provaTitulo, .provaIntro { grid-column: 1 / 8; }
+}
+@media (min-width: 900px) {
+  .provaTitulo { grid-column: 1 / 9; }
+  .provaIntro { grid-column: 1 / 7; }
+  .legenda { grid-column: 1 / 8; }
+}
+
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-4) var(--s-7);
+  margin-top: var(--s-7);
+}
+/* Alvo de toque ≥ 44 px sem afastar o sublinhado do texto. */
+.acoes > a { position: relative; }
+.acoes > a::before { content: ''; position: absolute; inset: -10px -4px; }
+.dentro { display: inline-flex; }
+@media (max-width: 599px) {
+  .acoes { flex-direction: column; align-items: flex-start; gap: var(--s-5); }
+}
+@media (min-width: 900px) {
+  .dentro { margin-left: auto; }
+}
+
+.outros { display: grid; gap: var(--s-4); margin-top: var(--s-8); }
+.registro { border-bottom: 1px solid var(--line); }

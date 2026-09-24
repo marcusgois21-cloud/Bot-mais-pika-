@@ -1,0 +1,408 @@
+/* Hero da Home (spec §6). Só transform e opacity em movimento; recorte por transforms opostos. */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  /* clip (e não hidden): não cria contêiner de rolagem, então a linha do tempo de scroll continua na raiz */
+  overflow: clip;
+  min-height: clamp(640px, 100svh, 1000px);
+  background: var(--luz-hero), url(/textura/ruido.png) repeat, var(--bg);
+  border-bottom: 1px solid var(--line);
+  /* a hairline da base coincide com a do topo da seção seguinte: uma linha só, de ponta a ponta */
+  margin-bottom: -1px;
+}
+
+/* ── z1 · conteúdo: sólido desde o primeiro paint ─────────────────────────────── */
+.conteudo {
+  --hero-topo: clamp(40px, 10svh, 128px);
+  position: relative;
+  z-index: var(--z-conteudo);
+  align-content: start;
+  padding-top: calc(var(--header-h) + var(--hero-topo));
+  padding-bottom: 64px;
+}
+.eyebrow { grid-column: 1 / -1; margin-bottom: var(--s-5); color: var(--text-2); }
+.titulo { grid-column: 1 / -1; margin-bottom: 40px; color: var(--text-1); }
+.ln { display: block; }
+.lnSm { display: block; }
+.sub { grid-column: 1 / -1; margin-bottom: var(--s-6); color: var(--text-2); }
+
+.ctas {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--s-1);
+}
+.ctaPrimario { display: flex; flex: none; }
+.ctas .ctaSecundario {
+  align-self: flex-start;
+  min-height: var(--target-min);
+  padding-block: 8px;
+  /* o sublinhado do .link fica na base do texto, não na base da área de toque */
+  --link-base: 8px;
+  font-size: var(--fs-body);
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.legenda { grid-column: 1 / -1; margin-top: var(--s-4); color: var(--text-3); }
+.legendaToque { display: none; }
+
+/* vazio deliberado: as colunas à direita do corte, onde a página aparece por dentro */
+.vazio { display: none; }
+
+@media (min-width: 600px) {
+  .lnSm { display: inline; }
+  .sub { grid-column: 1 / 7; }
+  .ctas { flex-direction: row; align-items: center; gap: var(--s-6); }
+  .legenda { grid-column: 1 / 7; margin-top: var(--s-5); }
+}
+@media (min-width: 900px) {
+  .eyebrow { grid-column: 1 / 9; }
+  .titulo { grid-column: 1 / 11; }
+  .legenda { grid-column: 1 / 10; }
+  .vazio {
+    display: block;
+    position: absolute;
+    grid-column: var(--col-corte) / -1;
+    top: calc(var(--header-h) + var(--hero-topo));
+    bottom: 64px;
+  }
+}
+/* lg/xl: as anotações substituem a legenda. O CutPlane lê --anotacoes (quantas desenhar). */
+@media (min-width: 1280px) {
+  .hero { --anotacoes: 5; }
+  .legenda { display: none; }
+}
+/* Telas baixas (notebook 1440 × 789): o CTA inteiro cabe no primeiro viewport, com folga (spec §1.4).
+   Só os intervalos encolhem — nenhum tamanho de fonte depende da altura. Em lg/xl, a anotação da versão
+   sai (a data e o build seguem no rodapé), para as outras ficarem junto das suas âncoras. */
+@media (min-width: 900px) and (max-height: 820px) {
+  .conteudo { --hero-topo: 40px; }
+  .eyebrow { margin-bottom: var(--s-4); }
+  .titulo { margin-bottom: var(--s-5); }
+  .sub { margin-bottom: var(--s-5); }
+}
+@media (min-width: 1280px) and (max-height: 820px) {
+  .hero { --anotacoes: 4; }
+}
+/* Mais baixas ainda (1280 × 720, 1366 × 657, 1536 × 730): os CTAs sobem para o lado do subtítulo, da
+   coluna 7 até a coluna do corte, alinhados ao topo dele. */
+@media (min-width: 900px) and (max-height: 760px) {
+  .sub { grid-row: 3; margin-bottom: 0; }
+  .ctas {
+    grid-row: 3;
+    grid-column: 7 / var(--col-corte);
+    align-self: start;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--s-1);
+  }
+}
+
+/* Toque abaixo de 900 px: o corte repousa depois da última coluna e acompanha a rolagem (só quando o
+   navegador sabe fazer isso e o movimento é permitido) — a legenda diz como vê-lo por dentro. */
+@supports (animation-timeline: view()) {
+  @media (max-width: 899px) and (pointer: coarse) and (prefers-reduced-motion: no-preference) {
+    .legendaTela { display: none; }
+    .legendaToque { display: inline; }
+  }
+}
+
+/* ── camadas absolutas: o mesmo contêiner (a largura do hero) para as unidades cqw ─────────── */
+.estrutura,
+.corte {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  container-type: inline-size;
+  /* caixa de conteúdo da grade, recalculada só com CSS (espelha .grid) */
+  --gx: max(var(--margin), (100cqw - var(--content-max)) / 2);
+  --cw: calc(100cqw - 2 * var(--gx));
+  --colw: calc((var(--cw) - (var(--cols) - 1) * var(--gutter)) / var(--cols));
+  /* posição de repouso: borda esquerda da coluna --col-corte */
+  --x-rest: calc((var(--col-corte) - 1) * (var(--colw) + var(--gutter)) + var(--corte-extra, 0px));
+}
+.estrutura { z-index: var(--z-estrutura); }
+.corte { z-index: var(--z-corte); }
+
+/* ── z0 · estrutura: janela que começa no corte e vai até a borda direita do hero ─────────── */
+.clipX {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--gx);
+  width: calc(100cqw - var(--gx));
+  transform: translateX(var(--x, var(--x-rest)));
+}
+.clipScroll { position: absolute; inset: 0; overflow: clip; }
+.innerScroll { position: absolute; inset: 0; }
+.innerX {
+  position: absolute;
+  inset: 0;
+  transform: translateX(calc(-1 * var(--x, var(--x-rest))));
+}
+
+/* Sem JS (e como rede de segurança): só colunas e intervalos, com os tokens. */
+.gradeCss {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--cw);
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--line-deco) 0 1px,
+    transparent 1px calc(var(--colw) - 1px),
+    var(--line-deco) calc(var(--colw) - 1px) var(--colw),
+    color-mix(in srgb, var(--text-1) 4%, transparent) var(--colw) calc(var(--colw) + var(--gutter))
+  );
+}
+.hero[data-pronto] .gradeCss { display: none; }
+
+/* Levantamento (desenhado pelo CutPlane, que se estiliza por atributos) */
+.innerX [data-lev],
+.innerX [data-lev] > div { position: absolute; inset: 0; }
+.innerX [data-lev] > svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+.innerX [data-s='colunas'] { stroke: var(--line-deco); }
+.innerX [data-s='intervalos'] { stroke: none; }
+.innerX [data-s='hachura'] { stroke: var(--text-1); stroke-opacity: 0.06; shape-rendering: geometricPrecision; }
+.innerX [data-s='baselines'] { stroke: var(--line); }
+.innerX [data-s='leitura'] { stroke: var(--line-ui); stroke-opacity: 0.7; }
+.innerX [data-s='caixas'] { stroke: var(--line-ui); stroke-dasharray: 6 4; }
+.innerX [data-s='cotas'] { stroke: var(--text-3); }
+.innerX [data-s='chamadas'] { stroke: var(--line-ui); }
+
+.innerX [data-cota] {
+  position: absolute;
+  white-space: nowrap;
+  color: var(--text-3);
+  line-height: 1;
+}
+.innerX [data-cota='acima'] { transform: translateY(-100%); }
+.innerX [data-cota='direita'] { transform: translateY(-50%); }
+
+/* Anotação: linha de negócio + linha técnica. O fundo recorta as linhas atrás dela, como num desenho técnico. */
+.innerX [data-anot] {
+  position: absolute;
+  display: grid;
+  gap: 2px;
+  width: max-content;
+  padding: 4px 6px 6px;
+  margin-left: -6px;
+  background: url(/textura/ruido.png) repeat, var(--bg);
+}
+.innerX [data-anot] > span:first-child { color: var(--text-2); }
+/* a copy técnica já vem em caixa alta; o hash da versão é código e mantém a caixa original */
+.innerX [data-anot] > span:last-child { color: var(--text-3); text-transform: none; }
+.innerX [data-anot] > span:last-child > span { white-space: nowrap; }
+
+/* ── z2 · corte ───────────────────────────────────────────────────────────── */
+.cutX {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--gx);
+  width: 0;
+  transform: translateX(var(--x, var(--x-rest)));
+}
+.cutScroll { position: absolute; inset: 0; }
+
+/* Alça: o símbolo de 24 px em giz; a fenda (x 14–16) fica sobre a linha. */
+.alca {
+  position: absolute;
+  top: calc(var(--header-h) + 16px);
+  left: -14px;
+  width: 24px;
+  height: 24px;
+  color: var(--text-1);
+}
+.alca svg { display: block; }
+/* Em telas de 2x a fenda de 2 px centra a linha de 1 px com meio pixel CSS, ainda nítido. */
+@media (min-resolution: 2dppx) {
+  .alca { left: -14.5px; }
+}
+.linha {
+  position: absolute;
+  top: calc(var(--header-h) + 40px);
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  background: var(--accent);
+  transform-origin: 50% 0;
+}
+
+/* Range acessível: faixa de 44 px no topo do corte, na largura do conteúdo; o polegar (44 × 44,
+   transparente) fica sobre a alça em qualquer valor: centro = gx − 2 + v · (coluna + intervalo). */
+.cutRange {
+  position: absolute;
+  top: calc(var(--header-h) + 6px);
+  left: calc(var(--gx) - 24px);
+  width: calc(var(--cols) * (var(--colw) + var(--gutter)) + 44px);
+  height: 44px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: transparent;
+  pointer-events: auto;
+  -webkit-appearance: none;
+  appearance: none;
+  touch-action: pan-y;
+}
+.cutRange:focus-visible { outline: none; }
+.cutRange::-webkit-slider-runnable-track { height: 44px; background: transparent; border: 0; }
+.cutRange::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: 0;
+}
+.cutRange::-moz-range-track { height: 44px; background: transparent; border: 0; }
+.cutRange::-moz-range-thumb { width: 44px; height: 44px; background: transparent; border: 0; border-radius: 0; }
+.cutRange::-moz-focus-outer { border: 0; }
+.cutRange:disabled { pointer-events: none; }
+
+/* Foco: anel Rubrica de 2 px em volta da alça (a alça É o controle, visualmente). */
+.cutRange:focus-visible ~ .cutX .alca {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+}
+
+/* Dicas: à direita da alça quando há faixa (lg/xl), à esquerda quando não há (o JS escolhe o lado). */
+.cutScroll .dica {
+  position: absolute;
+  top: calc(var(--header-h) + 16px);
+  /* a mesma borda de texto das anotações: 16 px depois do corte */
+  left: 16px;
+  width: max-content;
+  max-width: var(--dica-max, 28ch);
+  padding: 0 6px;
+  margin-left: -6px;
+  line-height: 24px;
+  color: var(--text-3);
+  background: url(/textura/ruido.png) repeat, var(--bg);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--dur-2) linear, visibility 0s linear var(--dur-2);
+}
+/* à esquerda, a dica fica sobre a superfície (sem linhas atrás): sem recorte, para não marcar a luz do hero */
+.hero[data-lado-dica='esquerda'] .dica {
+  left: auto;
+  right: 26px;
+  padding: 0;
+  margin: 0;
+  text-align: right;
+  background: none;
+}
+.hero[data-dica] .dicaCursor {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity var(--dur-2) linear;
+}
+.cutRange:focus-visible ~ .cutX .dicaTeclado { opacity: 1; visibility: visible; transition: none; }
+.cutRange:focus-visible ~ .cutX .dicaCursor { opacity: 0; visibility: hidden; transition: none; }
+
+/* ── estados (spec §6.5) ─────────────────────────────────────────────────── */
+/* Com JS, estrutura e corte esperam o Levantamento (T0). Rede de segurança: sem ele em 1,2 s, a grade
+   em CSS e o corte aparecem direto em repouso. Sem JS (html sem .js), aparecem desde o primeiro paint. */
+:global(html.js) .hero:not([data-pronto]) .estrutura,
+:global(html.js) .hero:not([data-pronto]) .corte {
+  visibility: hidden;
+  animation: seguranca 0s 1.2s both;
+}
+@keyframes seguranca { to { visibility: visible; } }
+
+/* Abertura completa: estrutura com o corte na margem esquerda; linha desce do topo; alça em fade. */
+.hero[data-fase='abertura'] .estrutura { animation: aparece var(--dur-3) linear both; }
+.hero[data-fase='abertura'] .linha { animation: desce var(--dur-2) var(--ease-cut) both; }
+.hero[data-fase='abertura'] .alca { animation: aparece var(--dur-2) var(--ease-cut) both; }
+/* Intro curta: revisita ou navegação cliente. */
+.hero[data-fase='curta'] .estrutura,
+.hero[data-fase='curta'] .cutX { animation: aparece 200ms linear both; }
+@keyframes aparece { from { opacity: 0; } }
+@keyframes desce { from { transform: scaleY(0); } }
+
+/* Movimento: a varredura (640 ms), os saltos do teclado e do "Ver por dentro" (240 ms). */
+.hero[data-mov='varredura'] .clipX,
+.hero[data-mov='varredura'] .innerX,
+.hero[data-mov='varredura'] .cutX { transition: transform var(--dur-6) var(--ease-cut); }
+.hero[data-mov='salto'] .clipX,
+.hero[data-mov='salto'] .innerX,
+.hero[data-mov='salto'] .cutX { transition: transform var(--dur-3) var(--ease-cut); }
+.hero[data-mov] .clipX,
+.hero[data-mov] .innerX,
+.hero[data-mov] .cutX { will-change: transform; }
+
+/* "Ver por dentro" ligado: o corte vai para a margem esquerda (vence o --x do JS). */
+:global(html[data-dentro='on']) .hero { --x: 0px !important; }
+
+/* Mobile e toque: a rolagem leva o corte do repouso até a margem esquerda (de 0 a 60% da saída do hero).
+   Inset 0: sem ele, a linha do tempo herda o scroll-padding-top do html (72 px) e, com o hero mais baixo
+   que a janela, a saída já começa antes da rolagem — o corte sairia do repouso por cima do título. */
+@supports (animation-timeline: view()) {
+  .hero {
+    view-timeline: --gg-corte block;
+    view-timeline-inset: 0px;
+  }
+  @media (pointer: coarse) and (prefers-reduced-motion: no-preference) {
+    .cutScroll,
+    .clipScroll {
+      animation: corteSai linear both;
+      animation-timeline: --gg-corte;
+      animation-range: exit 0% exit 60%;
+    }
+    .innerScroll {
+      animation: corteSaiInv linear both;
+      animation-timeline: --gg-corte;
+      animation-range: exit 0% exit 60%;
+    }
+    .hero[data-manual] .cutScroll,
+    .hero[data-manual] .clipScroll,
+    .hero[data-manual] .innerScroll { animation: none; }
+  }
+}
+@keyframes corteSai { to { transform: translateX(calc(-1 * var(--x, var(--x-rest)))); } }
+@keyframes corteSaiInv { to { transform: translateX(var(--x, var(--x-rest))); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero[data-fase] .estrutura,
+  .hero[data-fase] .cutX,
+  .hero[data-fase] .linha,
+  .hero[data-fase] .alca { animation: none; }
+  .hero[data-mov] .clipX,
+  .hero[data-mov] .innerX,
+  .hero[data-mov] .cutX { transition: none; }
+  .cutScroll .dica { transition: none; }
+}
+@media (prefers-contrast: more) {
+  .innerX [data-s='intervalos'] { display: none; }
+  .gradeCss {
+    background-image: repeating-linear-gradient(
+      90deg,
+      var(--line-deco) 0 1px,
+      transparent 1px calc(var(--colw) - 1px),
+      var(--line-deco) calc(var(--colw) - 1px) var(--colw),
+      transparent var(--colw) calc(var(--colw) + var(--gutter))
+    );
+  }
+}
+/* Cores forçadas: a estrutura é decorativa e some (spec §19); o texto fica. */
+@media (forced-colors: active) {
+  .hero { background: none; }
+  .estrutura,
+  .corte { display: none; }
+}

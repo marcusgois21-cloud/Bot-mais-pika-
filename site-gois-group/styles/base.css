@@ -1,0 +1,59 @@
+/* Reset mínimo + elementos base. */
+@font-face {
+  font-family: 'Martian Fallback';
+  src: local('Courier New'), local('Menlo'), local('DejaVu Sans Mono');
+  size-adjust: 116.7%;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+* { margin: 0; }
+
+/* Rolagem sempre instantânea: âncoras, "Voltar ao topo" e a restauração do histórico chegam sem animar a
+   página inteira. scroll-padding-top: o header fixo nunca cobre o foco (2.4.11); com "Ver por dentro"
+   ligado, scroll-padding-bottom faz o mesmo com a pílula (40 px + 16 px da borda + 16 px de folga). */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-padding-top: 72px;
+  background: var(--bg);
+}
+html[data-dentro='on'] { scroll-padding-bottom: calc(72px + env(safe-area-inset-bottom)); }
+
+body {
+  min-height: 100svh;
+  background: var(--bg);
+  color: var(--text-1);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  font-weight: 400;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+img, svg, video, canvas { display: block; max-width: 100%; }
+svg { flex-shrink: 0; }
+input, button, textarea, select { font: inherit; color: inherit; }
+button { background: none; border: 0; padding: 0; cursor: pointer; text-align: inherit; }
+a { color: inherit; text-decoration: none; }
+ol, ul { list-style: none; padding: 0; }
+table { border-collapse: collapse; }
+h1, h2, h3, h4 { font-weight: inherit; font-size: inherit; overflow-wrap: break-word; }
+p { overflow-wrap: break-word; }
+[hidden] { display: none !important; }
+
+::selection { background: var(--selection-bg); color: var(--selection-fg); }
+
+:focus { outline: none; }
+:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 3px;
+  border-radius: 0;
+}
+main:focus-visible, [tabindex='-1']:focus-visible { outline: none; }
+
+/* Superfícies com tom próprio pintam o próprio fundo. */
+[data-surface] { background: var(--bg); color: var(--text-1); }

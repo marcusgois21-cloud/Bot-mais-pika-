@@ -1,0 +1,67 @@
+/* /contato/ (spec §14.7): H1 e lead 1–8 · formulário 1–7 · lateral 9–12, sem sticky. */
+.pagina { padding-top: calc(var(--header-h) + clamp(3rem, 1.5rem + 4.444vw, 6rem)); }
+.pagina.comFaixa { padding-top: clamp(3rem, 1.5rem + 4.444vw, 6rem); }
+
+/* faixa de homologação sem canal de envio: pontilhado + hachura = pendente (§7.1) */
+.faixa {
+  margin-top: var(--header-h);
+  border-block: 1px dotted var(--line-ui);
+  background-image: var(--hachura);
+}
+.faixaTexto { padding-block: var(--s-3); color: var(--text-2); }
+
+.cabeca { grid-column: 1 / -1; min-width: 0; }
+.lead { margin-top: var(--s-6); }
+.vazioTopo,
+.vazioMeio { display: none; }
+
+.formulario { grid-column: 1 / -1; min-width: 0; margin-top: var(--s-8); }
+
+/* ── lateral ─────────────────────────────────────────────────────────────── */
+.lateral {
+  grid-column: 1 / -1;
+  display: grid;
+  align-content: start;
+  row-gap: var(--s-8);
+  margin-top: var(--s-9);
+  min-width: 0;
+}
+.bloco {
+  display: grid;
+  align-content: start;
+  padding-top: var(--s-6);
+  border-top: 1px solid var(--line);
+}
+.blocoTitulo { color: var(--text-3); }
+
+.passos {
+  margin-top: var(--s-5);
+  border-bottom: 1px solid var(--line);
+}
+.passo {
+  display: grid;
+  grid-template-columns: 2em minmax(0, 1fr);
+  align-items: baseline;
+  column-gap: var(--s-3);
+  padding-block: var(--s-4);
+  border-top: 1px solid var(--line);
+  color: var(--text-1);
+}
+.passo:first-child { border-top: 0; padding-top: 0; }
+.indice { color: var(--text-3); line-height: 1; }
+.prazo { margin-top: var(--s-5); }
+.canal { margin-top: var(--s-5); min-width: 0; }
+
+/* tablet: a lateral vem depois do formulário, em duas colunas */
+@media (min-width: 600px) and (max-width: 899px) {
+  .lateral { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gutter); }
+}
+
+/* desktop */
+@media (min-width: 900px) {
+  .cabeca { grid-column: 1 / 9; }
+  .vazioTopo { display: block; grid-column: 9 / -1; }
+  .formulario { grid-column: 1 / 8; grid-row: 2; }
+  .vazioMeio { display: block; grid-column: 8 / 9; grid-row: 2; }
+  .lateral { grid-column: 9 / -1; grid-row: 2; margin-top: var(--s-8); }
+}

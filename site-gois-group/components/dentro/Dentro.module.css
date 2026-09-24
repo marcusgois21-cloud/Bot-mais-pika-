@@ -1,0 +1,83 @@
+/* Como um .link--quieto (spec §17): a linha desenha da esquerda por scaleX e sai pela direita. */
+.botaoLink {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: var(--target-min);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  color: var(--text-1);
+}
+.botaoLink::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(50% + 0.8em);
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: 100% 50%;
+  transition: transform var(--dur-2) var(--ease-cut);
+  pointer-events: none;
+}
+@media (hover: hover) {
+  .botaoLink:hover::after { transform: scaleX(1); transform-origin: 0 50%; }
+}
+.botaoSecundario {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: var(--control-h);
+  padding: 0 20px;
+  border: 1px solid var(--line-ui);
+  font-size: var(--fs-small);
+  font-weight: 560;
+  color: var(--text-1);
+  transition: border-color var(--dur-2) linear;
+}
+@media (hover: hover) {
+  .botaoSecundario:hover { border-color: var(--text-1); }
+}
+.quadrado {
+  width: 6px;
+  height: 6px;
+  border: 1px solid var(--line-ui);
+  flex-shrink: 0;
+}
+.quadrado[data-ligado] { background: var(--text-1); border-color: var(--text-1); }
+
+.pill {
+  position: fixed;
+  left: var(--margin);
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  z-index: var(--z-pill);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 40px;
+  padding: 0 4px 0 14px;
+  background: var(--grafite-2);
+  border: 1px solid var(--linha-ui);
+  color: var(--giz);
+  font-size: var(--fs-small);
+  animation: pill-entra var(--dur-2) linear both;
+}
+.quadradoRubrica { width: 6px; height: 6px; background: var(--rubrica); }
+.desligar {
+  position: relative;
+  height: 32px;
+  padding: 0 10px;
+  font-weight: 560;
+  color: var(--giz);
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 10px calc(50% + 0.75em);
+  background-size: calc(100% - 20px) 1px;
+}
+/* área de toque de 44 px (a pílula tem 40): o alvo invisível passa 6 px acima e abaixo do botão */
+.desligar::before { content: ''; position: absolute; inset: -6px 0; }
+/* Com o menu mobile aberto, a pílula sai de cena: nunca por cima do menu nem fora da armadilha de foco. */
+:global(html[data-menu-aberto]) .pill { visibility: hidden; }
+@keyframes pill-entra { from { opacity: 0; } }

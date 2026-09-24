@@ -1,0 +1,87 @@
+/* Linha de case (spec §12.2). Mesmas colunas da grade da página: 4 / 8 / 12. */
+.linha {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  grid-template-areas:
+    'num num num seta'
+    'tit tit tit tit'
+    'est est met met';
+  column-gap: var(--gutter);
+  row-gap: var(--s-4);
+  align-items: start;
+  padding-block: var(--s-5) var(--s-6);
+  border-top: 1px solid var(--line);
+  transition: border-color var(--dur-2) linear;
+}
+@media (min-width: 600px) {
+  .linha {
+    grid-template-areas:
+      'num num tit tit tit tit tit seta'
+      '.   .   est est est met met met';
+  }
+}
+@media (min-width: 900px) {
+  .linha {
+    grid-template-areas: 'num num tit tit tit tit tit est est met met seta';
+    align-items: baseline;
+    padding-block: var(--s-6);
+    min-height: 120px;
+  }
+}
+
+/* Fundo de hover/foco um pouco mais largo que o texto, para a linha não encostar no fundo. */
+.linha::before {
+  content: '';
+  position: absolute;
+  inset: 0 calc(-1 * var(--s-3));
+  z-index: -1;
+  background: var(--surface-1);
+  opacity: 0;
+  transition: opacity var(--dur-2) linear;
+  pointer-events: none;
+}
+
+.numero { grid-area: num; padding-top: 0.45em; }
+@media (min-width: 900px) { .numero, .seta { padding-top: 0; } }
+.titulo { grid-area: tit; display: grid; gap: var(--s-1); min-width: 0; }
+.nome { color: var(--text-1); }
+.estrutura { grid-area: est; display: grid; gap: var(--s-2); justify-items: start; min-width: 0; }
+.metrica { grid-area: met; min-width: 0; }
+.seta {
+  grid-area: seta;
+  justify-self: end;
+  padding-top: 0.5em;
+  color: var(--text-2);
+  transition: transform var(--dur-2) var(--ease-cut), color var(--dur-2) linear;
+}
+
+/* O link do título se estende pela linha inteira (o ::after não tem conteúdo: só a área de clique). */
+.link { color: inherit; }
+.link::after { content: ''; position: absolute; inset: 0; z-index: 1; }
+
+@media (hover: hover) {
+  .linha:not(.reservado):hover { border-top-color: var(--text-1); }
+  .linha:not(.reservado):hover::before { opacity: 1; }
+  .linha:hover .seta { transform: translateX(4px); color: var(--text-1); }
+}
+.linha:not(.reservado):focus-within { border-top-color: var(--text-1); }
+.linha:not(.reservado):focus-within::before { opacity: 1; }
+.linha:focus-within .seta { transform: translateX(4px); color: var(--text-1); }
+/* Foco: o anel envolve a linha inteira, não só o título. */
+@supports selector(:has(a)) {
+  .link:focus-visible { outline: none; }
+  .linha:has(.link:focus-visible)::before { outline: 2px solid var(--focus-ring); outline-offset: 0; }
+}
+
+/* Espaço reservado: pontilhado (pendente) + hachura (reservado), sem link, sem hover. */
+.reservado { border-top: 1px dotted var(--line-ui); }
+.reservado::before { opacity: 1; background: var(--hachura); inset: 0; }
+
+.chave { display: grid; justify-items: start; gap: 2px; }
+.chaveValor { font-weight: 540; font-variant-numeric: tabular-nums lining-nums; color: var(--text-1); }
+
+@media (forced-colors: active) {
+  .reservado::before { background: none; }
+}

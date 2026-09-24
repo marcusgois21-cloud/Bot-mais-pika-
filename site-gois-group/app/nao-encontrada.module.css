@@ -1,0 +1,198 @@
+/* 404 (spec §14.9). A faixa é uma versão estática, só CSS, do hero em repouso: a grade à direita do
+   corte, a linha em Rubrica saindo da fenda do símbolo e uma anotação. Nenhum JS, nenhum movimento
+   sozinho; só transform quando o modo "Ver por dentro" leva o corte à margem esquerda. */
+
+.faixa {
+  position: relative;
+  isolation: isolate;
+  overflow: clip;
+  background: var(--luz-hero), url(/textura/ruido.png) repeat, var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+
+/* ── z1 · título: nas colunas à esquerda do corte, pousado na base da faixa ─────────────── */
+.conteudo {
+  position: relative;
+  z-index: var(--z-conteudo);
+  min-height: 50svh;
+  align-content: end;
+  padding-top: calc(var(--header-h) + 112px);
+  padding-bottom: var(--s-7);
+}
+.titulo { grid-column: 1 / var(--col-corte); color: var(--text-1); }
+
+/* ── camadas absolutas: a caixa de conteúdo da grade, recalculada só com CSS (espelha .grid) ─── */
+.camada {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  container-type: inline-size;
+  --gx: max(var(--margin), (100cqw - var(--content-max)) / 2);
+  --cw: calc(100cqw - 2 * var(--gx));
+  --colw: calc((var(--cw) - (var(--cols) - 1) * var(--gutter)) / var(--cols));
+  /* repouso: a borda esquerda da coluna --col-corte */
+  --x-rest: calc((var(--col-corte) - 1) * (var(--colw) + var(--gutter)));
+}
+.estrutura { z-index: var(--z-estrutura); }
+.corte { z-index: var(--z-corte); }
+
+/* z0 · a grade só à direita do corte: janela que começa no corte + conteúdo deslocado de volta */
+.clipX {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--gx);
+  width: calc(100cqw - var(--gx));
+  overflow: clip;
+  transform: translateX(var(--x, var(--x-rest)));
+}
+.innerX {
+  position: absolute;
+  inset: 0;
+  transform: translateX(calc(-1 * var(--x, var(--x-rest))));
+}
+.grade {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: var(--cw);
+  background-image: repeating-linear-gradient(
+    90deg,
+    var(--line-deco) 0 1px,
+    transparent 1px calc(var(--colw) - 1px),
+    var(--line-deco) calc(var(--colw) - 1px) var(--colw),
+    color-mix(in srgb, var(--text-1) 4%, transparent) var(--colw) calc(var(--colw) + var(--gutter))
+  );
+}
+
+/* z2 · o corte */
+.corteX {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--gx);
+  width: 0;
+  transform: translateX(var(--x, var(--x-rest)));
+}
+.clipX,
+.innerX,
+.corteX { transition: transform var(--dur-3) var(--ease-cut); }
+
+/* a alça (símbolo de 24 px em giz): a fenda (x 14–16) fica sobre a linha */
+.alca {
+  position: absolute;
+  top: calc(var(--header-h) + 16px);
+  left: -14px;
+  width: 24px;
+  height: 24px;
+  color: var(--text-1);
+}
+.alca svg { display: block; }
+@media (min-resolution: 2dppx) {
+  .alca { left: -14.5px; }
+}
+.linha {
+  position: absolute;
+  top: calc(var(--header-h) + 40px);
+  bottom: 0;
+  left: 0;
+  width: 1px;
+  background: var(--accent);
+}
+
+/* A anotação: à esquerda do corte enquanto a faixa por dentro for estreita (< 1280), à direita, sobre a
+   grade, quando houver três colunas — com o fundo recortando as linhas, como no Levantamento. */
+.anotacao {
+  position: absolute;
+  top: calc(var(--header-h) + 16px);
+  right: 26px;
+  display: grid;
+  gap: 2px;
+  width: max-content;
+  max-width: calc(var(--x-rest) - 26px);
+  text-align: right;
+}
+.principal { color: var(--text-2); line-height: 24px; }
+.tecnica { color: var(--text-3); }
+
+@media (min-width: 1280px) {
+  .anotacao {
+    right: auto;
+    left: 16px;
+    max-width: calc(var(--cw) - var(--x-rest) - 16px);
+    padding: 0 6px 6px;
+    margin-left: -6px;
+    text-align: left;
+    background: url(/textura/ruido.png) repeat, var(--bg);
+  }
+}
+
+/* "Ver por dentro" ligado: o corte vai para a margem esquerda — a página inteira por dentro. */
+:global(html[data-dentro='on']) .faixa { --x: 0px; }
+:global(html[data-dentro='on']) .anotacao {
+  right: auto;
+  left: 16px;
+  max-width: calc(var(--cw) - 16px);
+  padding: 0 6px 6px;
+  margin-left: -6px;
+  text-align: left;
+  background: url(/textura/ruido.png) repeat, var(--bg);
+}
+
+/* ── depois da faixa: texto, caminhos, botão ─────────────────────────────────────────── */
+.seguir {
+  align-items: start;
+  padding-top: var(--s-8);
+  padding-bottom: var(--section-y);
+}
+.texto { grid-column: 1 / -1; }
+.caminhos { grid-column: 1 / -1; margin-top: var(--s-7); }
+.caminhos ul { display: grid; border-bottom: 1px solid var(--line); }
+.caminho { border-top: 1px solid var(--line); transition: border-color var(--dur-2) linear; }
+.link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4);
+  min-height: 64px;
+  padding-block: var(--s-4);
+}
+.linkTexto { color: var(--text-2); transition: color var(--dur-2) linear; }
+.seta { margin-right: 4px; color: var(--text-1); transition: transform var(--dur-2) var(--ease-cut); }
+/* hover e foco: hairline em giz, texto para --text-1, seta avança 4 px (spec §17) */
+.caminho:focus-within { border-top-color: var(--text-1); }
+.caminho:focus-within .linkTexto { color: var(--text-1); }
+.caminho:focus-within .seta { transform: translateX(4px); }
+@media (hover: hover) {
+  .caminho:hover { border-top-color: var(--text-1); }
+  .caminho:hover .linkTexto { color: var(--text-1); }
+  .caminho:hover .seta { transform: translateX(4px); }
+}
+.dentro { grid-column: 1 / -1; margin-top: var(--s-7); }
+.vazio { display: none; }
+
+@media (min-width: 600px) {
+  .texto,
+  .caminhos,
+  .dentro { grid-column: 1 / 7; }
+}
+@media (min-width: 900px) {
+  .vazio { display: block; grid-column: 8 / -1; grid-row: 1 / span 3; align-self: stretch; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clipX,
+  .innerX,
+  .corteX { transition: none; }
+}
+/* Cores forçadas: a estrutura é decorativa e some (spec §19); o texto e a anotação ficam. */
+@media (forced-colors: active) {
+  .faixa { background: none; }
+  .estrutura,
+  .alca,
+  .linha { display: none; }
+  .anotacao,
+  :global(html[data-dentro='on']) .anotacao { background: none; }
+  .seta { color: LinkText; }
+}
