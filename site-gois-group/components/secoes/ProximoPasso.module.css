@@ -1,0 +1,93 @@
+/* 08 · Próximo passo (spec §8, §17 "linhas de lista" e magnetismo). Mobile primeiro. */
+.grade { align-items: start; }
+
+.titulo { grid-column: 1 / -1; }
+.corpo { grid-column: 1 / -1; margin-top: var(--s-6); }
+.vazio { display: none; }
+
+/* ── entradas: linhas inteiras clicáveis, sem cards ── */
+.entradas {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+  margin-top: var(--s-8);
+}
+.entrada {
+  position: relative;
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: subgrid;
+}
+.hairline,
+.fechoLinha {
+  height: 0;
+  border-top: var(--hairline) solid var(--line);
+  transition: border-color var(--dur-2) linear;
+}
+.hairline { position: absolute; inset: 0 0 auto; }
+.fechoLinha { grid-column: 1 / -1; display: block; }
+
+.link {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: var(--s-4);
+  row-gap: var(--s-1);
+  align-items: center;
+  min-height: 64px;
+  padding-block: var(--s-5);
+}
+.entradaTitulo {
+  grid-column: 1;
+  color: var(--text-2);
+  transition: color var(--dur-2) linear;
+}
+.apoio { grid-column: 1; color: var(--text-2); max-width: 44ch; }
+.seta {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  margin-right: 4px;
+  color: var(--text-1);
+  transition: transform var(--dur-2) var(--ease-cut);
+}
+
+/* Hover e foco: hairline em giz, texto de --text-2 para --text-1, seta avança 4 px. */
+.entrada:focus-within .hairline { border-top-color: var(--text-1); }
+.entrada:focus-within .entradaTitulo { color: var(--text-1); }
+.entrada:focus-within .seta { transform: translateX(4px); }
+@media (hover: hover) {
+  .entrada:hover .hairline { border-top-color: var(--text-1); }
+  .entrada:hover .entradaTitulo { color: var(--text-1); }
+  .entrada:hover .seta { transform: translateX(4px); }
+}
+
+.acao { grid-column: 1 / -1; margin-top: var(--s-8); justify-self: start; }
+
+/* ── tablet e desktop: título 1–4 · apoio 5–7 · seta 8, dentro das colunas 1–8 ── */
+@media (min-width: 600px) {
+  .titulo { grid-column: 1 / -1; }
+  .corpo { grid-column: 1 / 7; }
+  .link {
+    grid-template-columns: subgrid;
+    column-gap: var(--gutter);
+    padding-block: var(--s-5);
+  }
+  .entradaTitulo { grid-column: 1 / 5; }
+  .apoio { grid-column: 5 / 8; }
+  /* repousa 4 px antes da borda da coluna e, no hover, avança até ela */
+  .seta { grid-column: 8 / 9; grid-row: 1; justify-self: end; margin-right: 4px; }
+}
+
+@media (min-width: 900px) {
+  .titulo { grid-column: 1 / 11; }
+  .corpo { grid-column: 1 / 7; }
+  .entradas { grid-column: 1 / 9; grid-row: 4; }
+  .fechoLinha { grid-column: 1 / 9; grid-row: 5; }
+  .vazio { display: block; grid-column: 9 / 13; grid-row: 4 / 6; align-self: stretch; margin-top: var(--s-8); }
+  .acao { grid-row: 6; }
+}
+
+@media (forced-colors: active) {
+  .hairline,
+  .fechoLinha { border-top-color: CanvasText; }
+}
