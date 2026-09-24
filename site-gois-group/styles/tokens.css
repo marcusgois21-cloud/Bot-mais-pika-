@@ -50,6 +50,8 @@
   --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px;
   --s-7: 48px; --s-8: 64px; --s-9: 96px; --s-10: 128px; --s-11: 192px; --s-12: 256px;
   --section-y: clamp(6rem, 4rem + 8.889vw, 12rem);
+  /* topo de toda página interna: rótulo e H1 no mesmo lugar em todas as rotas (48 → 96 px abaixo do header) */
+  --pagina-topo: calc(var(--header-h) + clamp(3rem, 1.5rem + 4.444vw, 6rem));
   --cols: 4; --margin: 20px; --gutter: 12px; --content-max: 1520px; --header-h: 56px;
   /* coluna onde o corte repousa (spec §6); em xs, depois da última coluna, 7 px dentro da margem —
      assim a linha nunca cruza texto em repouso. --corte-extra é lido também pelo CutPlane. */
