@@ -3,12 +3,14 @@
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { heroCopy } from '@/content/copy/hero'
 import { BUILD_DATE, BUILD_SHA } from '@/lib/env'
-import { contraste } from '@/lib/contraste'
+import derivados from '@/content/generated/derivados.json'
 import { mq } from '@/lib/breakpoints'
 import { dataCurta, numero, porExtenso } from '@/lib/formatar'
 import {
   amortecer,
+  chamada,
   colunaMaisProxima,
+  inteiraEmRepouso,
   levantamento,
   linhasVisuais,
   posicaoDaColuna,
@@ -32,13 +34,13 @@ import {
 
 /** esquerda: borda do conteúdo em relação ao hero · naTela: a mesma borda na viewport (para o ponteiro) */
 type Geo = { esquerda: number; naTela: number; largura: number; colunas: number; gutter: number; repouso: number }
-type Extra = { peso: string; fs: number; lh: number; ctaH: number; contraste: number | null }
+type Extra = { peso: string; fs: number; lh: number; ctaH: number }
 type Estado = { lev: Levantamento; m: Medidas; extra: Extra }
 
 const inteiro = (n: number) => numero(Math.round(n))
 const A = heroCopy.anotacoes
 
-function medir(sec: HTMLElement): { m: Medidas; geo: Geo; extra: Extra } | null {
+function medir(sec: HTMLElement): { m: Medidas; geo: Omit<Geo, 'repouso'>; extra: Extra } | null {
   const grade = sec.querySelector<HTMLElement>('[data-hero-grade]')
   const h1 = sec.querySelector<HTMLElement>('h1')
   if (!grade || !h1) return null
@@ -52,7 +54,6 @@ function medir(sec: HTMLElement): { m: Medidas; geo: Geo; extra: Extra } | null 
   const colunas = parseInt(cs.getPropertyValue('--cols'), 10) || 12
   const gutter = parseFloat(cs.columnGap) || 0
   const colunaCorte = parseInt(cs.getPropertyValue('--col-corte'), 10) || colunas
-  const extra = parseFloat(cs.getPropertyValue('--corte-extra')) || 0
   const ret = (el: Element | null | undefined): Retangulo => {
     const r = el ? el.getBoundingClientRect() : { left: ox, top: oy, width: 0, height: 0 }
     return { x: r.left - ox, y: r.top - oy, w: r.width, h: r.height }
@@ -77,12 +78,8 @@ function medir(sec: HTMLElement): { m: Medidas; geo: Geo; extra: Extra } | null 
   const fs = parseFloat(tcs.fontSize)
   const lh = parseFloat(tcs.lineHeight) || fs * 0.94
 
-  // CTA: o invólucro (o botão pode estar deslocado pelo magnetismo); contraste das cores computadas do botão.
-  const ctaCaixa = alvo('cta')
-  const botao = ctaCaixa?.firstElementChild
-  const k = botao && getComputedStyle(botao)
-  const cta = ret(ctaCaixa)
-  const colW = (largura - (colunas - 1) * gutter) / colunas
+  // CTA: o invólucro (o botão pode estar deslocado pelo magnetismo).
+  const cta = ret(alvo('cta'))
 
   return {
     m: {
@@ -92,6 +89,7 @@ function medir(sec: HTMLElement): { m: Medidas; geo: Geo; extra: Extra } | null 
       colunas,
       gutter,
       colunaCorte,
+      corteExtra: parseFloat(cs.getPropertyValue('--corte-extra')) || 0,
       topoConteudo: g.top - oy + (parseFloat(cs.paddingTop) || 0),
       topoFaixa: parseFloat(getComputedStyle(sec).getPropertyValue('--header-h')) || 56,
       titulo: { fs, lh, linhas: linhasVisuais(rets) },
@@ -99,10 +97,10 @@ function medir(sec: HTMLElement): { m: Medidas; geo: Geo; extra: Extra } | null 
       subtitulo: ret(alvo('sub')),
       cta,
       ctaSecundario: ret(alvo('cta2')),
-      anotacoes: matchMedia(mq.lg).matches,
+      anotacoes: parseInt(cs.getPropertyValue('--anotacoes'), 10) || 0,
     },
-    geo: { esquerda: ox - s.left, naTela: ox, largura, colunas, gutter, repouso: Math.max(0, colunaCorte - 1) * (colW + gutter) + extra },
-    extra: { peso: tcs.fontWeight, fs, lh, ctaH: cta.h, contraste: k ? contraste(k.color, k.backgroundColor) : null },
+    geo: { esquerda: ox - s.left, naTela: ox, largura, colunas, gutter },
+    extra: { peso: tcs.fontWeight, fs, lh, ctaH: cta.h },
   }
 }
 
@@ -116,7 +114,9 @@ function textos(a: Anotacao, { lev, m, extra }: Estado): [string, string[]] {
     case 'leitura':
       return [A.leitura.principal, A.leitura.tecnica]
     case 'botao':
-      return [A.botao.principal(inteiro(extra.ctaH)), A.botao.tecnica(extra.contraste ? numero(extra.contraste, 2) : null)]
+      // o contraste do botão vem do build (--btn-fg sobre --btn-bg, scripts/derive-tokens.mjs): o mesmo número
+      // da seção Capacidade, de uma fonte só — e nunca o de um hover que estivesse ativo na hora da medida
+      return [A.botao.principal(inteiro(extra.ctaH)), A.botao.tecnica(numero(derivados.botaoPrimario.contraste, 2))]
     default:
       return [A.versao.principal(dataCurta(BUILD_DATE)), A.versao.tecnica(BUILD_SHA)]
   }
@@ -126,7 +126,8 @@ export function CutPlane() {
   const raiz = useRef<HTMLDivElement>(null)
   const abrir = useRef(() => {})
   const [estado, setEstado] = useState<Estado | null>(null)
-  const [pos, setPos] = useState<{ topos: number[]; rotulos: number[] } | null>(null)
+  /** 2ª passagem: topo de cada anotação, x de cada rótulo de cota (null = não cabe inteiro em repouso) e chamadas */
+  const [pos, setPos] = useState<{ topos: number[]; rotulos: (number | null)[]; chamadas: string } | null>(null)
 
   useEffect(() => {
     const sec = raiz.current?.closest<HTMLElement>('[data-hero]')
@@ -261,15 +262,26 @@ export function CutPlane() {
       if (!deve) pararLoop()
     }
 
-    // Teclado e toque: uma coluna por passo, Home = margem esquerda, End = margem direita (240 ms).
+    // Teclado e toque: uma coluna por passo, Home = margem esquerda, End = margem direita (240 ms). O valor
+    // do repouso leva ao repouso exato (em xs e sm, "depois da última coluna" fica na margem).
     const aoRange = () => {
       if (!range || !geo) return
       interromper()
-      x = posicaoDaColuna(Number(range.value), geo.largura, geo.colunas, geo.gutter)
+      const v = Number(range.value)
+      x = v === colunaMaisProxima(geo.repouso, geo.largura, geo.colunas, geo.gutter) ? geo.repouso : posicaoDaColuna(v, geo.largura, geo.colunas, geo.gutter)
       salto()
       definirX(x)
       valor(x, true)
       ladoDica(x)
+    }
+    // Com o range em foco, o cursor move o corte sem mexer no valor (nada é anunciado). A tecla seguinte
+    // parte da coluna onde o corte está; se ela não mudar o valor (Home já na margem), o corte encaixa ali.
+    const aoTecla = (e: KeyboardEvent) => {
+      if (!range || !geo || !/^(Arrow|Page|Home|End)/.test(e.key)) return
+      const v = String(colunaMaisProxima(destino(), geo.largura, geo.colunas, geo.gutter))
+      if (range.value === v) return
+      range.value = v
+      setTimeout(() => range.value === v && aoRange())
     }
     const aoTocarRange = (e: PointerEvent) => {
       if (e.pointerType === 'touch') ds.manual = ''
@@ -284,7 +296,8 @@ export function CutPlane() {
     const medirAgora = (novaGrade: boolean) => {
       const r = vivo && medir(sec)
       if (!r) return
-      geo = r.geo
+      const lev = levantamento(r.m)
+      geo = { ...r.geo, repouso: lev.xRepouso }
       if (range) range.max = String(geo.colunas)
       if (novaGrade && !dentro()) {
         // grade nova: o corte volta ao repouso, sem animação
@@ -293,7 +306,7 @@ export function CutPlane() {
       }
       valor(destino(), true)
       ladoDica(destino())
-      setEstado({ lev: levantamento(r.m), m: r.m, extra: r.extra })
+      setEstado({ lev, m: r.m, extra: r.extra })
     }
 
     // T0: o Levantamento está desenhado e posicionado (chamado no useLayoutEffect, antes do paint).
@@ -355,6 +368,7 @@ export function CutPlane() {
     const aoFontes = () => medirAgora(false)
 
     range?.addEventListener('input', aoRange)
+    range?.addEventListener('keydown', aoTecla)
     range?.addEventListener('pointerdown', aoTocarRange, { passive: true })
     addEventListener('gg:dentro', aoDentro)
     document.addEventListener('visibilitychange', escutar)
@@ -379,6 +393,7 @@ export function CutPlane() {
       aberto = false
       escutar()
       range?.removeEventListener('input', aoRange)
+      range?.removeEventListener('keydown', aoTecla)
       range?.removeEventListener('pointerdown', aoTocarRange)
       removeEventListener('gg:dentro', aoDentro)
       document.removeEventListener('visibilitychange', escutar)
@@ -387,20 +402,28 @@ export function CutPlane() {
     }
   }, [])
 
-  // 2ª passagem (antes do paint): colisões das anotações; rótulos de cota dentro do hero.
+  // 2ª passagem (antes do paint): colisões e chamadas das anotações; rótulos de cota dentro do hero e
+  // inteiros em repouso (senão a cota inteira sai).
   useLayoutEffect(() => {
     if (!estado || !raiz.current) return
     const { lev } = estado
     const anot = raiz.current.querySelectorAll<HTMLElement>('[data-anot]')
     const rot = raiz.current.querySelectorAll<HTMLElement>('[data-cota]')
+    const hs = lev.anotacoes.map((_, i) => anot[i]?.offsetHeight ?? 0)
+    const topos = resolverColisoes(
+      // 1 px abaixo da âncora: a linha medida continua visível logo acima do recorte da anotação
+      lev.anotacoes.map((a, i) => ({ y: a.alinhar === 'topo' ? a.y + 1 : a.y, h: hs[i], alinhar: a.alinhar })),
+      12,
+      lev.H - 32,
+    )
     setPos({
-      topos: resolverColisoes(
-        // 1 px abaixo da âncora: a linha medida continua visível logo acima do recorte da anotação
-        lev.anotacoes.map((a, i) => ({ y: a.alinhar === 'topo' ? a.y + 1 : a.y, h: anot[i]?.offsetHeight ?? 0, alinhar: a.alinhar })),
-        12,
-        lev.H - 32,
-      ),
-      rotulos: lev.rotulosCota.map((r, i) => (r.lado === 'direita' ? r.x : posicionarRotulo(r.x, rot[i]?.offsetWidth ?? 0, lev.W))),
+      topos,
+      rotulos: lev.rotulosCota.map((r, i) => {
+        const w = rot[i]?.offsetWidth ?? 0
+        const x = r.lado === 'direita' ? r.x : posicionarRotulo(r.x, w, lev.W)
+        return inteiraEmRepouso(Math.min(x, r.x0), Math.max(x + w, r.x1), lev.xRepouso) ? x : null
+      }),
+      chamadas: lev.anotacoes.map((a, i) => chamada(a, topos[i], hs[i], lev.xRepouso)).join(''),
     })
   }, [estado])
 
@@ -424,14 +447,19 @@ export function CutPlane() {
         <path data-s="baselines" d={lev.baselines} />
         <path data-s="leitura" d={lev.leitura} />
         <path data-s="caixas" d={lev.caixas} />
-        <path data-s="cotas" d={lev.cotas} />
+        <path data-s="cotas" d={lev.rotulosCota.map((r, i) => (pos?.rotulos[i] == null ? '' : r.d)).join('')} />
+        <path data-s="chamadas" d={pos?.chamadas} />
       </svg>
       <div>
-        {lev.rotulosCota.map((r, i) => (
-          <span key={r.id} className="t-micro" data-cota={r.lado} style={{ left: pos?.rotulos[i] ?? r.x, top: r.y }}>
-            {heroCopy.cota(numero(r.px))}
-          </span>
-        ))}
+        {lev.rotulosCota.map((r, i) => {
+          // sempre no DOM (a 2ª passagem mede a largura); fora da janela, invisível
+          const x = pos?.rotulos[i]
+          return (
+            <span key={r.id} className="t-micro" data-cota={r.lado} style={{ left: x ?? r.x, top: r.y, visibility: x === null ? 'hidden' : undefined }}>
+              {heroCopy.cota(numero(r.px))}
+            </span>
+          )
+        })}
         {lev.anotacoes.map((a, i) => {
           const [principal, tecnica] = textos(a, estado)
           return (
