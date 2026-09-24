@@ -1,0 +1,13 @@
+/* Home 04 · Ecossistema. Ritmo (§4.3): rótulo para título 24 · título para lead 32 · lead para conteúdo 64. */
+.cabeca { grid-column: 1 / -1; min-width: 0; }
+.lead { margin-top: var(--s-6); }
+.estado { margin-top: var(--s-5); }
+.vazio { display: none; }
+@media (min-width: 900px) {
+  .cabeca { grid-column: 1 / 9; }
+  /* colunas 9–12 ao lado do título: vazio de propósito */
+  .vazio { display: block; grid-column: 9 / -1; }
+}
+.mapa { grid-column: 1 / -1; min-width: 0; margin-top: var(--s-8); }
+.cta { grid-column: 1 / -1; margin-top: var(--s-7); }
+.ctaLink { min-height: var(--target-min); font-size: var(--fs-body); font-weight: 500; }

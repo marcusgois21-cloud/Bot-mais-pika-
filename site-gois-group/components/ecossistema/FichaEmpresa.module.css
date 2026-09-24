@@ -1,0 +1,65 @@
+/* Ficha abaixo do mapa (spec §9.3): 4 blocos de 3 colunas. Todas as fichas ocupam a mesma célula;
+   a ativa aparece por crossfade (--dur-3) e a altura do conjunto não muda. */
+.ficha {
+  grid-area: 1 / 1;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  column-gap: var(--gutter);
+  row-gap: var(--s-6);
+  align-content: start;
+  min-width: 0;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--dur-2) var(--ease-exit),
+    visibility 0s linear var(--dur-2);
+}
+.ficha[data-ativa] {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity var(--dur-3) linear 60ms,
+    visibility 0s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ficha,
+  .ficha[data-ativa] { transition: none; }
+}
+
+.bloco {
+  grid-column: span 4;
+  display: grid;
+  align-content: start;
+  gap: var(--s-2);
+  min-width: 0;
+}
+@media (min-width: 900px) {
+  .bloco { grid-column: span 3; }
+}
+
+.identidade { gap: var(--s-4); }
+.logo { display: block; width: 48px; height: 48px; color: var(--text-1); }
+.logo :global(svg) { width: 100%; height: 100%; }
+.nome { color: var(--text-1); }
+.descricao { max-width: 36ch; }
+
+.status { display: inline-flex; align-items: center; gap: var(--s-2); color: var(--text-2); }
+.site { justify-self: start; }
+
+.numero { display: grid; gap: 2px; }
+.numero + .numero { margin-top: var(--s-3); }
+.valor {
+  font-size: var(--fs-title);
+  font-weight: 560;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums lining-nums;
+  color: var(--text-1);
+}
+.unidade { color: var(--text-2); }
+.caso { justify-self: start; margin-top: var(--s-2); }
+
+.texto { grid-column: 1 / -1; max-width: 64ch; }
+@media (min-width: 900px) {
+  .texto { grid-column: 1 / 8; }
+}
