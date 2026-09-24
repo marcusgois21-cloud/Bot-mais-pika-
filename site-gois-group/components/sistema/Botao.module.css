@@ -59,6 +59,11 @@
   .header:hover { background: var(--btn-bg); color: var(--btn-fg); border-color: var(--btn-bg); }
 }
 
+/* Forced colors: o fundo giz é descartado; o contorno devolve a forma de botão ao primário. */
+@media (forced-colors: active) {
+  .primario { border: 1px solid ButtonText; }
+}
+
 .largo { width: 100%; }
 @media (max-width: 599px) {
   .primario.largo { height: 52px; }

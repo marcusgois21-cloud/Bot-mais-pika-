@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0 0 auto;
   z-index: var(--z-header);
-  view-transition-name: site-header;
+  /* view-transition-name: global, em styles/motion.css (.site-header), para o CSS Modules não o renomear */
   color: var(--text-1);
   transition:
     transform var(--dur-3) var(--ease-move),
@@ -23,6 +23,8 @@
 }
 .header[data-tone='papel'][data-rolado] { background: rgb(233 231 224 / 0.94); border-bottom-color: var(--papel-ui); }
 .header[data-aberto] { background: var(--breu); }
+/* menu aberto: arrastar a barra não rola a página por baixo (o menu contém a própria rolagem) */
+.header[data-aberto] .barra { touch-action: none; }
 
 .barra {
   height: var(--header-h);
@@ -69,10 +71,13 @@
   .link:hover { color: var(--text-1); }
   .link:hover::after { transform: scaleX(1); transform-origin: 0 50%; }
 }
-.link[aria-current='page'] { color: var(--text-1); }
-.link[aria-current='page']::after { transform: scaleX(1); }
+.link[aria-current] { color: var(--text-1); }
+.link[aria-current]::after { transform: scaleX(1); }
 
 .menuBotao {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-width: var(--target-min);
   min-height: var(--target-min);
   padding: 0 4px;
@@ -118,5 +123,5 @@
   min-height: 72px;
   color: var(--giz);
 }
-.menuLink[aria-current='page'] { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
+.menuLink[aria-current] { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.18em; }
 .menuAcoes { display: grid; gap: var(--s-4); justify-items: start; }

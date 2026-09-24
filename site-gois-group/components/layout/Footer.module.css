@@ -3,8 +3,16 @@
   padding-top: var(--section-y);
   padding-bottom: calc(var(--s-6) + env(safe-area-inset-bottom));
 }
+/* "Ver por dentro" ligado: o fim do documento sobe acima da pílula fixa (40 px + 16 px da borda),
+   para ela nunca cobrir o último conteúdo nem o foco. */
+:global(html[data-dentro='on']) .footer {
+  padding-bottom: calc(var(--s-6) + 40px + 16px + env(safe-area-inset-bottom));
+}
 .frase { grid-column: 1 / -1; display: grid; }
 @media (min-width: 900px) { .frase { grid-column: 1 / 11; } }
+/* Duas linhas também a 320 px: abaixo de 360 px, "A superfície muda." não cabe no piso de 40 px.
+   Tamanho local (rem + vw, nunca vh), só na frase. */
+@media (max-width: 359px) { .footer .frase { font-size: min(var(--fs-display-xl), calc(0.25rem + 9.2vw)); } }
 .linha { display: block; }
 
 .cta {
@@ -12,8 +20,14 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--s-5) var(--s-7);
-  margin-top: var(--s-8);
+  gap: var(--s-3) var(--s-7);
+  margin-top: var(--s-7);
+}
+/* link de texto com área de toque de 44 px; a linha fica na base do texto */
+.ctaLink {
+  min-height: var(--target-min);
+  font-weight: 500;
+  --link-base: calc((var(--target-min) - 1.4em) / 2 - 2px);
 }
 
 .info {
@@ -31,8 +45,14 @@
 @media (min-width: 900px) { .celula { grid-column: span 3; } }
 .marca { display: inline-flex; min-height: var(--target-min); align-items: center; justify-self: start; }
 .titulo { margin-bottom: 0; }
-.lista { display: grid; gap: var(--s-2); justify-items: start; }
-.lista a { min-height: 32px; }
+/* Alvos de 44 px (spec §19), sem folga entre eles: o ritmo fica quase o mesmo de antes (44 contra 32 + 8)
+   e a linha do link fica na base do texto, não na base da área de toque. */
+.lista { display: grid; justify-items: start; }
+.lista a,
+.topo {
+  min-height: var(--target-min);
+  --link-base: calc((var(--target-min) - 1.5em) / 2 - 2px);
+}
 
 .barra {
   grid-column: 1 / -1;

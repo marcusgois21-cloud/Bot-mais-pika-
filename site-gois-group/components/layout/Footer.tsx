@@ -1,8 +1,7 @@
 import { TransitionLink } from './TransitionLink'
 import { Lockup } from '@/components/marca/Lockup'
-import { Botao } from '@/components/sistema/Botao'
+import { RodapeAcao } from './RodapeAcao'
 import { Seta } from '@/components/sistema/Icone'
-import { CopiarEmail } from '@/components/sistema/CopiarEmail'
 import { VerPorDentroBotao } from '@/components/dentro/VerPorDentroBotao'
 import { site, NAV_COMPLETA } from '@/content/site'
 import { empresas } from '@/content/empresas'
@@ -34,12 +33,7 @@ export function Footer() {
           </span>
         </p>
 
-        <div className={styles.cta}>
-          <Botao href="/contato/?origem=footer" seta data-dentro="Botão principal">
-            Iniciar um projeto
-          </Botao>
-          {email && <CopiarEmail email={email} />}
-        </div>
+        <RodapeAcao email={email} />
 
         <div className={styles.info}>
           <div className={styles.celula}>
@@ -49,7 +43,7 @@ export function Footer() {
             <p className="t-small c-2">{site.tagline}</p>
           </div>
 
-          <nav className={styles.celula} aria-label="Rodapé">
+          <nav id="navegacao-rodape" className={styles.celula} aria-label="Rodapé">
             <p className={`t-small c-3 ${styles.titulo}`}>Navegação</p>
             <ul className={styles.lista}>
               {NAV_COMPLETA.map(item => (
