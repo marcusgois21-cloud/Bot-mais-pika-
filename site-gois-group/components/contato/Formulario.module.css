@@ -1,0 +1,393 @@
+/* Formulário de /contato/ (spec §14.7, §19). Raio 0 em tudo; a única curva é o indicador do radio (§4.4).
+   Erro = borda de 2 px giz + ícone + texto giz. Nunca Rubrica, nunca vermelho. */
+
+.form {
+  position: relative;
+  display: grid;
+  row-gap: var(--s-8);
+}
+@media (max-width: 599px) {
+  .form { row-gap: var(--s-7); }
+}
+
+/* ── blocos (fieldsets principais) ───────────────────────────────────────── */
+.bloco,
+.grupo {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.bloco {
+  border-top: 1px solid var(--line);
+  padding-top: var(--s-6);
+}
+/* legend flutuante: margens e quebra previsíveis em todos os navegadores */
+.legenda {
+  float: left;
+  width: 100%;
+  padding: 0;
+  margin-bottom: var(--s-6);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--s-1) var(--s-4);
+  color: var(--text-1);
+}
+.bloco > .legenda ~ *,
+.grupo > .rotulo ~ * { clear: both; }
+
+.obrigatorio {
+  font-size: var(--fs-small);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.005em;
+  color: var(--text-3);
+}
+
+/* revelação progressiva: fade de 240 ms (reduced motion: --dur-3 = 0) */
+.revela { animation: aparece var(--dur-3) var(--ease-cut) both; }
+@keyframes aparece { from { opacity: 0; } }
+
+/* ── 1 · tipo: radios em linhas grandes ─────────────────────────────────── */
+.tipos {
+  --sangria: 10px;
+  isolation: isolate;
+  border-bottom: 1px solid var(--line);
+}
+.tipo {
+  position: relative;
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  column-gap: var(--s-5);
+  row-gap: var(--s-1);
+  padding-block: var(--s-5) calc(var(--s-5) + 2px);
+  border-top: 1px solid var(--line);
+  transition: border-color var(--dur-2) linear;
+}
+/* superfície da linha escolhida e anel de foco da linha inteira (sangra 16 px para os lados) */
+.tipo::before {
+  content: '';
+  position: absolute;
+  inset: 0 calc(-1 * var(--sangria));
+  z-index: -1;
+  pointer-events: none;
+  transition: background-color var(--dur-2) linear;
+}
+.tipo[data-marcado] { border-top-color: var(--text-1); }
+.tipo[data-marcado]::before { background: var(--surface-1); }
+.tipo:has(:focus-visible)::before { outline: 2px solid var(--focus-ring); outline-offset: -2px; }
+.tipo .radio { grid-row: 1 / span 2; margin-top: calc((var(--fs-title) * 1.2 - 20px) / 2); }
+.tipo .radio:focus-visible { outline: none; }
+.tipoTitulo { grid-column: 2; color: var(--text-1); cursor: pointer; }
+/* a linha inteira é o alvo do clique (o rótulo cobre a linha; nada é lido aqui) */
+.tipoTitulo::after { content: ''; position: absolute; inset: 0 calc(-1 * var(--sangria)); }
+.tipoApoio { grid-column: 2; color: var(--text-2); }
+@media (min-width: 600px) {
+  .tipos { --sangria: var(--s-4); }
+}
+@media (hover: hover) and (pointer: fine) {
+  .tipo:hover { border-top-color: var(--text-1); }
+  .tipo:hover .radio:not(:checked) { border-color: var(--text-2); }
+}
+.tipos:has(:disabled) { opacity: 0.5; }
+
+/* ── indicadores: círculo (radio) e quadrado (checkbox) ─────────────────── */
+.radio,
+.caixa {
+  appearance: none;
+  flex: none;
+  display: grid;
+  place-content: center;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  border: 1.5px solid var(--line-ui);
+  background: transparent;
+  cursor: pointer;
+  transition: border-color var(--dur-2) linear;
+}
+.radio { border-radius: 50%; }
+.radio::before,
+.caixa::before {
+  content: '';
+  width: 10px;
+  height: 10px;
+  background: var(--text-1);
+  transform: scale(0);
+  transition: transform var(--dur-2) var(--ease-cut);
+}
+.radio::before { border-radius: 50%; }
+.radio:checked,
+.caixa:checked { border-color: var(--text-1); }
+.radio:checked::before,
+.caixa:checked::before { transform: scale(1); }
+.radio:disabled,
+.caixa:disabled { cursor: default; }
+@media (forced-colors: active) {
+  .radio::before,
+  .caixa::before { forced-color-adjust: none; background: CanvasText; }
+  .tipo:has(:focus-visible)::before { outline-color: Highlight; }
+}
+
+/* ── grade de campos ─────────────────────────────────────────────────────── */
+.grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-6) var(--gutter);
+}
+@media (min-width: 600px) {
+  .grade { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+.inteiro { grid-column: 1 / -1; }
+.meia { grid-column: auto; }
+
+.campo {
+  display: grid;
+  align-content: start;
+  gap: var(--s-2);
+  min-width: 0;
+}
+.grupo { display: block; }
+.rotulo {
+  text-wrap: pretty;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--s-2);
+  padding: 0;
+  font-size: var(--fs-body);
+  font-weight: 500;
+  line-height: 1.4;
+  color: var(--text-1);
+}
+.grupo > .rotulo { float: left; width: 100%; margin-bottom: var(--s-3); }
+
+/* ── controles ───────────────────────────────────────────────────────────── */
+.controle,
+.area {
+  display: block;
+  width: 100%;
+  min-height: var(--control-h);
+  padding: 0 var(--s-4);
+  border: 1px solid var(--line-ui);
+  border-radius: 0;
+  background: var(--surface-1);
+  color: var(--text-1);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  appearance: none;
+  transition: border-color var(--dur-2) linear;
+}
+.area {
+  min-height: 168px;
+  padding-block: var(--s-3);
+  resize: vertical;
+}
+.controle::placeholder,
+.area::placeholder { color: var(--text-3); opacity: 1; }
+@media (hover: hover) and (pointer: fine) {
+  .controle:hover:not(:disabled),
+  .area:hover:not(:disabled) { border-color: var(--text-2); }
+}
+.controle:disabled,
+.area:disabled { opacity: 0.5; cursor: default; }
+/* preenchimento automático no mesmo degrau de superfície (a sombra interna só pinta o fundo) */
+.controle:autofill {
+  -webkit-text-fill-color: var(--text-1);
+  box-shadow: inset 0 0 0 100vmax var(--surface-1);
+  caret-color: var(--text-1);
+}
+
+.selectCaixa { position: relative; display: block; }
+.selectCaixa .controle { padding-right: calc(var(--s-4) + 12px + var(--s-4)); cursor: pointer; }
+.selectCaixa option { background: var(--surface-2); color: var(--text-1); }
+.selectIcone {
+  position: absolute;
+  top: 50%;
+  right: var(--s-4);
+  translate: 0 -50%;
+  color: var(--text-2);
+  pointer-events: none;
+}
+
+.ajuda { font-size: var(--fs-small); line-height: 1.5; color: var(--text-2); }
+
+/* ── opções de grupo (radio e checkbox dentro do projeto) ────────────────── */
+.opcoes,
+.opcoesDuplas {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border-bottom: 1px solid var(--line);
+}
+@media (min-width: 600px) {
+  .opcoesDuplas { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--gutter); }
+  /* hairline inferior de cada coluna fecha no mesmo lugar */
+  .opcoesDuplas { border-bottom: 0; }
+  .opcoesDuplas .opcao { border-bottom: 1px solid var(--line); margin-bottom: -1px; }
+}
+.opcao {
+  display: flex;
+  align-items: center;
+  gap: var(--s-4);
+  min-height: 52px;
+  padding-block: var(--s-3);
+  border-top: 1px solid var(--line);
+  font-size: var(--fs-body);
+  line-height: 1.4;
+  color: var(--text-1);
+  cursor: pointer;
+  transition: border-color var(--dur-2) linear;
+}
+@media (hover: hover) and (pointer: fine) {
+  .opcao:hover { border-top-color: var(--text-2); }
+  .opcao:hover input:not(:checked):not(:disabled) { border-color: var(--text-2); }
+}
+.opcao:has(:disabled) { opacity: 0.5; cursor: default; }
+
+/* ── erro ────────────────────────────────────────────────────────────────── */
+.erro {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-2);
+  font-size: var(--fs-small);
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--text-1);
+}
+.iconeErro { flex: none; margin-top: calc((1.5em - 14px) / 2); }
+.comErro .controle,
+.comErro .area {
+  border-width: 2px;
+  border-color: var(--text-1);
+  padding-inline: calc(var(--s-4) - 1px);
+}
+.comErro .area { padding-block: calc(var(--s-3) - 1px); }
+.comErro .selectCaixa .controle { padding-right: calc(var(--s-4) + 12px + var(--s-4) - 1px); }
+/* grupos: traço de 2 px giz à esquerda + mensagem */
+.grupoComErro {
+  border-left: 2px solid var(--text-1);
+  padding-left: var(--s-4);
+}
+.grupoComErro > .erro { margin-bottom: var(--s-4); }
+.bloco.grupoComErro > .erro { margin-bottom: var(--s-5); }
+
+/* ── resumo de erros (recebe o foco no envio) ───────────────────────────── */
+.resumo {
+  display: grid;
+  gap: var(--s-4);
+  padding: var(--s-5);
+  border: 2px solid var(--text-1);
+}
+.resumoTitulo {
+  text-wrap: balance;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  font-size: var(--fs-lead);
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  color: var(--text-1);
+}
+.resumoTitulo .iconeErro { margin-top: calc((1.4em - 14px) / 2); }
+.resumoLista { display: grid; gap: var(--s-1); padding-left: calc(14px + var(--s-3)); }
+.resumoLink {
+  display: grid;
+  align-content: center;
+  min-height: var(--target-min);
+  padding-block: var(--s-1);
+}
+.resumoRotulo {
+  justify-self: start;
+  color: var(--text-1);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+}
+.resumoMensagem { font-size: var(--fs-small); line-height: 1.5; color: var(--text-2); }
+@media (hover: hover) {
+  .resumoLink:hover .resumoRotulo { text-decoration-color: var(--text-2); }
+}
+
+/* ── fim do formulário: privacidade, envio, falha ───────────────────────── */
+.final {
+  display: grid;
+  gap: var(--s-5);
+  padding-top: var(--s-6);
+  border-top: 1px solid var(--line);
+}
+.privacidade { max-width: var(--measure-body); }
+.envio {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--s-3) var(--s-5);
+}
+.enviar { width: 100%; }
+@media (min-width: 600px) {
+  .enviar { width: auto; min-width: 200px; }
+}
+/* "Enviando…" é um estado, não um botão apagado */
+.envio .enviar:disabled { opacity: 1; cursor: progress; }
+
+.falha {
+  display: grid;
+  gap: var(--s-5);
+  padding-top: var(--s-5);
+  border-top: 2px solid var(--text-1);
+}
+.falhaTexto {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--s-3);
+  font-size: var(--fs-lead);
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  color: var(--text-2);
+}
+.falhaTexto .iconeErro { margin-top: calc((1.4em - 14px) / 2); color: var(--text-1); }
+.falhaTitulo { font-weight: 500; color: var(--text-1); }
+.acoes { display: flex; flex-wrap: wrap; gap: var(--s-3); }
+@media (max-width: 599px) {
+  .acoes > * { width: 100%; }
+}
+
+/* ── anti-spam ───────────────────────────────────────────────────────────── */
+.armadilha {
+  position: absolute;
+  left: -10000px;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+/* ── sucesso: substitui o formulário ────────────────────────────────────── */
+.sucesso {
+  display: grid;
+  align-content: start;
+  padding-top: var(--s-6);
+  border-top: 1px solid var(--text-1);
+  animation: aparece var(--dur-3) var(--ease-cut) both;
+}
+.sucessoTexto { margin-top: var(--s-5); }
+.sucessoRotulo { margin-top: var(--s-8); color: var(--text-3); }
+.enviados {
+  margin-top: var(--s-4);
+  border-top: 1px solid var(--line);
+}
+.enviado {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--s-1) var(--gutter);
+  padding-block: var(--s-4);
+  border-bottom: 1px solid var(--line);
+}
+@media (min-width: 600px) {
+  .enviado { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); }
+}
+.enviadoValor { color: var(--text-1); white-space: pre-line; overflow-wrap: anywhere; }
+.voltar { margin-top: var(--s-7); }
+/* alvo de 44 px sem afastar o sublinhado do texto */
+.voltar a::after { content: ''; position: absolute; inset: -8px 0; }
