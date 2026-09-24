@@ -1,0 +1,86 @@
+/* Grade de medições (spec §8-07 bloco B): 5 colunas no desktop, 2 no tablet, 1 no mobile.
+   As linhas de cada célula (termo, valor, referência) são subgrid: o valor de todas as células
+   da mesma fileira começa na mesma altura. Tudo o que muda ao medir tem altura reservada. */
+.grade {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  column-gap: var(--gutter);
+  row-gap: 0;
+}
+@media (min-width: 600px) { .grade { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 900px) { .grade { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+
+.celula {
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  row-gap: var(--s-3);
+  align-content: start;
+  padding-top: var(--s-4);
+  padding-bottom: var(--s-7);
+  border-top: 1px solid var(--line);
+  min-width: 0;
+}
+@media (min-width: 900px) { .celula { padding-bottom: 0; } }
+
+.termo { display: grid; align-content: start; gap: var(--s-2); }
+.rotulo { font-weight: 500; color: var(--text-1); }
+/* Segunda linha técnica: reserva duas linhas (a nota "da primeira página desta visita" cabe sem deslocar). */
+.tecnica { min-height: 2.6em; }
+
+/* O dd é o contêiner de consulta (a célula não pode ser: contenção desligaria o subgrid). */
+.valor { container-type: inline-size; margin-top: var(--s-3); min-width: 0; }
+.caixa {
+  --fs-valor: clamp(1.75rem, 19cqi, var(--fs-display-m));
+  display: flex;
+  align-items: flex-end;
+  /* altura do numeral, ou de duas linhas de texto ("Interaja com a página para medir.") */
+  min-height: max(calc(var(--fs-valor) * 1.1), calc(var(--fs-small) * 1.5 * 2));
+}
+/* Célula estreita (5 colunas entre 900 e 1279 px): o texto pode ocupar três linhas. */
+@container (max-width: 13rem) {
+  .caixa { min-height: max(calc(var(--fs-valor) * 1.1), calc(var(--fs-small) * 1.5 * 3)); }
+}
+.numero {
+  display: inline-flex;
+  align-items: baseline;
+  font-size: var(--fs-valor);
+  font-weight: 560;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums lining-nums;
+  white-space: nowrap;
+  color: var(--text-1);
+}
+.numero:global(.c-3) { color: var(--text-3); }
+/* Unidade em mono, na caixa em que se escreve: s, ms, KB (nunca "S"). */
+.unidade, .unidade:global(.t-label) { color: var(--text-2); letter-spacing: 0.04em; text-transform: none; }
+.texto { max-width: 28ch; }
+.referencia { align-self: start; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .chega { animation: chega var(--dur-2) linear both; }
+}
+@keyframes chega { from { opacity: 0; } }
+
+/* Mobile: experiência própria — cada medição numa linha, rótulo à esquerda e valor à direita,
+   referência embaixo. A coluna do valor tem largura fixa (o dd é contêiner de consulta). */
+@media (max-width: 599px) {
+  .celula {
+    grid-row: auto;
+    grid-template-rows: none;
+    grid-template-columns: minmax(0, 1fr) 9.5rem;
+    column-gap: var(--s-4);
+    row-gap: var(--s-2);
+    padding-block: var(--s-4) var(--s-5);
+  }
+  .termo { grid-column: 1; grid-row: 1; }
+  .valor { grid-column: 2; grid-row: 1; margin-top: 0; }
+  .caixa {
+    justify-content: flex-end;
+    align-items: flex-start;
+    text-align: right;
+    min-height: max(calc(var(--fs-valor) * 1.1), calc(var(--fs-small) * 1.5 * 2));
+  }
+  .referencia { grid-column: 1 / -1; grid-row: 2; }
+}
