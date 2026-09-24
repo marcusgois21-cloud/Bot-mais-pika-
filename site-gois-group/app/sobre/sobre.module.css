@@ -1,0 +1,265 @@
+/* /sobre/ (spec §14.6). Mobile primeiro: tudo empilhado. No desktop (≥ 900), o rótulo de cada parte fica
+   ao lado, nas colunas 1–3 (o vazio medido), e o texto corre a partir da coluna 4 — o mesmo eixo do
+   lead do topo. A coluna 4 é a que deixa cada verso do manifesto numa linha só a partir de 1280. */
+
+/* ── topo: rótulo, H1 (sólido no primeiro paint) e lead ─────────────────────────────── */
+.topo { padding-top: calc(var(--header-h) + clamp(3rem, 1.5rem + 4.444vw, 6rem)); }
+.gradeTopo { align-items: start; }
+.titulo { grid-column: 1 / -1; }
+.vazioTopo { display: none; }
+.lead { grid-column: 1 / -1; margin-top: var(--s-6); }
+
+@media (min-width: 600px) {
+  .vazioTopo { display: block; grid-column: 1 / 3; align-self: stretch; margin-top: var(--s-6); }
+  .lead { grid-column: 3 / -1; }
+}
+@media (min-width: 900px) {
+  .titulo { grid-column: 1 / 11; }
+  .vazioTopo { grid-column: 1 / 4; margin-top: var(--s-7); }
+  .lead { grid-column: 4 / 11; margin-top: var(--s-7); }
+}
+
+/* ── partes com rótulo ao lado ───────────────────────────────────────────────────────── */
+.lado { align-items: start; }
+.corpo { grid-column: 1 / -1; min-width: 0; }
+.vazio { display: none; }
+
+@media (min-width: 900px) {
+  /* linha 1: o rótulo; linha 2 (flexível): o resto da altura do texto — onde fica o vazio medido */
+  .lado { grid-template-rows: auto 1fr; }
+  .lado .rotulo {
+    grid-row: 1;
+    margin-bottom: 0;
+    /* a linha de base do rótulo encontra a da primeira linha ao lado (métricas da Archivo: §6.2) */
+    padding-top: max(0px, var(--alinha, 0px));
+  }
+  .corpo { grid-column: 4 / -1; grid-row: 1 / span 2; }
+  .vazio { display: block; grid-column: 1 / 4; grid-row: 2; align-self: stretch; margin-top: var(--s-6); }
+}
+/* base = entrelinha/2 + 0,334 × corpo (ascendente 0,878; descendente 0,210) */
+.alinha-lead { --alinha: calc(1.034 * (var(--fs-lead) - var(--fs-eyebrow))); }
+.alinha-titulo { --alinha: calc(0.934 * var(--fs-title) - 1.034 * var(--fs-eyebrow)); }
+.alinha-display { --alinha: calc(0.859 * var(--fs-display-m) - 1.034 * var(--fs-eyebrow)); }
+
+.acao { margin-top: var(--s-4); }
+/* área de toque de 44 px; o sublinhado continua na base do texto, não na base da área */
+.acao .linkAlvo {
+  min-height: var(--target-min);
+  padding-block: 8px;
+  background-origin: content-box;
+  background-clip: content-box;
+  font-weight: 500;
+}
+
+/* ── manifesto ───────────────────────────────────────────────────────────────────────── */
+.versos { display: grid; row-gap: var(--s-2); color: var(--text-1); }
+/* Um verso por linha; o corte revela só a largura do texto. Onde a tela obriga a quebrar, a
+   continuação recua, para o verso seguinte nunca se confundir com ela. */
+.verso { display: block; width: fit-content; max-width: 100%; padding-left: 0.75em; text-indent: -0.75em; }
+.acaoDentro { margin-top: var(--s-7); }
+.botaoDentro { display: inline-flex; }
+@media (min-width: 900px) {
+  .versos { row-gap: var(--s-1); }
+}
+/* 900–1279: os versos precisam da largura toda para caber cada um numa linha — rótulo em cima. */
+@media (min-width: 900px) and (max-width: 1279px) {
+  .manifesto { grid-template-rows: none; }
+  .manifesto .rotulo { grid-row: auto; margin-bottom: var(--s-5); padding-top: 0; }
+  .manifesto .corpo { grid-column: 1 / -1; grid-row: auto; }
+  .manifesto .vazio { display: none; }
+}
+
+/* ── visão: uma frase ───────────────────────────────────────────────────────────────── */
+@media (min-width: 900px) {
+  .declaracao { grid-column: 4 / 12; }
+}
+
+/* ── convicções: lista numerada ─────────────────────────────────────────────────────── */
+.conviccoes { display: grid; }
+.conviccao {
+  display: grid;
+  grid-template-columns: 2rem minmax(0, 1fr);
+  column-gap: var(--s-3);
+  row-gap: var(--s-2);
+  padding-block: var(--s-5);
+  border-top: 1px solid var(--line);
+}
+.conviccao:first-child { padding-top: 0; border-top: 0; }
+.conviccao:last-child { padding-bottom: 0; }
+.numero { grid-column: 1; grid-row: 1; color: var(--text-3); font-variant-numeric: tabular-nums; }
+.afirmacao { grid-column: 2; color: var(--text-1); }
+.explicacao { grid-column: 2; }
+
+@media (min-width: 900px) {
+  /* número na coluna 4 · afirmação 5–8 · explicação 9–12 */
+  .conviccoes { grid-template-columns: subgrid; }
+  .conviccao {
+    grid-column: 1 / -1;
+    grid-template-columns: subgrid;
+    column-gap: var(--gutter);
+    align-items: baseline;
+    padding-block: var(--s-6);
+  }
+  .afirmacao { grid-column: 2 / 6; }
+  .explicacao { grid-column: 6 / -1; grid-row: 1; max-width: 36ch; }
+}
+
+/* ── modelo: três formas sobre o trilho do Método ───────────────────────────────────── */
+.modelo {
+  --trilho-h: 40px;
+  grid-column: 1 / -1;
+  display: grid;
+  row-gap: var(--s-6);
+  margin-top: var(--s-8);
+}
+/* cabeçalho do trilho: P1–P6, cada fase começa numa marca */
+.fases { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
+.fase {
+  display: grid;
+  align-content: start;
+  gap: 2px;
+  min-width: 0;
+  padding: 0 4px var(--s-2) 8px;
+  border-left: 1px solid var(--line-deco);
+}
+.fase:last-child { border-right: 1px solid var(--line-deco); }
+.faseCodigo { color: var(--text-2); }
+.faseNome { display: none; color: var(--text-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.formas { display: grid; row-gap: var(--s-7); }
+.forma { display: grid; row-gap: var(--s-4); }
+.formaTexto { display: grid; row-gap: var(--s-2); }
+.formaNome { color: var(--text-1); }
+.formaDesc { max-width: 40ch; }
+
+.trilho {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-rows: var(--trilho-h) auto;
+}
+/* cada fase: o trecho da linha e a marca na borda esquerda (marcas decorativas, sem texto) */
+.seg { position: relative; grid-row: 1; }
+.seg::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--line-deco);
+}
+.seg::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: calc(50% - 4px);
+  width: 1px;
+  height: 9px;
+  background: var(--line-deco);
+}
+/* a marca que fecha a última fase */
+.trilho::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  top: calc(var(--trilho-h) / 2 - 4px);
+  width: 1px;
+  height: 9px;
+  background: var(--line-deco);
+}
+/* trecho coberto: traço contínuo em giz (existe, confirmado: spec §7.1) com as pontas marcadas */
+.seg[data-cobre]::before { top: calc(50% - 1px); height: 2px; background: var(--text-1); }
+.seg[data-cobre]::after { background: var(--text-1); }
+.seg[data-ini]::after,
+.seg[data-fim] + .seg::after { top: calc(50% - 6px); height: 13px; background: var(--text-1); }
+.trilho:has(.seg[data-fim]:nth-child(6))::after { top: calc(var(--trilho-h) / 2 - 6px); height: 13px; background: var(--text-1); }
+
+/* P6 em laço: sobe no fim da fase, corre para a esquerda e desce no começo dela (tracejado 6 4) */
+.laco {
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  bottom: calc(50% + 3px);
+  height: 18px;
+  background:
+    linear-gradient(90deg, var(--line-ui) 0 6px, transparent 6px 10px) 0 0 / 10px 1px repeat-x,
+    linear-gradient(180deg, var(--line-ui) 0 6px, transparent 6px 10px) 0 0 / 1px 10px repeat-y,
+    linear-gradient(180deg, var(--line-ui) 0 6px, transparent 6px 10px) 100% 0 / 1px 10px repeat-y;
+}
+.lacoSeta {
+  position: absolute;
+  /* a ponta pousa na linha do trilho, no começo da fase */
+  left: -4px;
+  bottom: -4px;
+  fill: none;
+  stroke: var(--line-ui);
+  stroke-width: 1;
+  stroke-linecap: square;
+  overflow: visible;
+}
+
+.codigos {
+  grid-row: 2;
+  grid-column: var(--de, 1) / 7;
+  justify-self: start;
+  margin-top: var(--s-2);
+  color: var(--text-3);
+  white-space: nowrap;
+}
+.codigos[data-laco] { grid-column: 1 / 7; justify-self: end; }
+
+@media (min-width: 600px) {
+  .faseNome { display: block; }
+}
+
+@media (min-width: 900px) {
+  .modelo { grid-row: 3; margin-top: var(--s-9); }
+}
+@media (min-width: 1280px) {
+  /* nome e texto nas colunas 1–3; o trilho nas colunas 4–12, alinhado ao cabeçalho */
+  .modelo { grid-template-columns: subgrid; row-gap: var(--s-7); }
+  .fases { grid-column: 4 / -1; }
+  .formas { grid-column: 1 / -1; grid-template-columns: subgrid; }
+  .forma { grid-column: 1 / -1; grid-template-columns: subgrid; align-items: start; }
+  .formaTexto { grid-column: 1 / 4; }
+  /* a linha do trilho na altura do meio da primeira linha do nome */
+  .trilho { grid-column: 4 / -1; margin-top: calc(var(--fs-title) * 0.6 - var(--trilho-h) / 2); }
+}
+
+/* ── registro ────────────────────────────────────────────────────────────────────────── */
+.tabela { width: 100%; }
+.tabela th,
+.tabela td {
+  padding-block: var(--s-4);
+  text-align: left;
+  vertical-align: baseline;
+  border-top: 1px solid var(--line);
+  font-weight: inherit;
+}
+.tabela thead th { padding-top: 0; border-top: 0; font-weight: 500; }
+.tabela tbody tr:last-child > * { border-bottom: 1px solid var(--line); }
+.tabela th[scope='row'],
+.tabela thead th:first-child { width: 8em; padding-right: var(--gutter); font-variant-numeric: tabular-nums; }
+
+/* ── fecho ───────────────────────────────────────────────────────────────────────────── */
+.gradeFecho { align-items: start; }
+.fecho { grid-column: 1 / -1; }
+.fechoAcao { grid-column: 1 / -1; margin-top: var(--s-6); justify-self: start; }
+.fechoVazio { display: none; }
+@media (min-width: 600px) {
+  .fecho { grid-column: 1 / 8; }
+}
+@media (min-width: 900px) {
+  .fecho { grid-column: 1 / 9; }
+  .fechoAcao { grid-row: 2; }
+  .fechoVazio { display: block; grid-column: 10 / -1; grid-row: 1 / span 2; align-self: stretch; }
+}
+
+@media (forced-colors: active) {
+  .seg::before,
+  .seg::after,
+  .trilho::after { background: CanvasText; }
+  .laco { background: none; border: 1px dashed CanvasText; border-bottom: 0; }
+  .lacoSeta { stroke: CanvasText; }
+}

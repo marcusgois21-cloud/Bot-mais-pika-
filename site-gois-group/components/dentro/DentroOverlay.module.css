@@ -1,0 +1,94 @@
+/* Camada "Ver por dentro" (spec §15.3). Absoluta sobre o documento, sem ponteiro, abaixo do header. */
+
+.camada {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: var(--z-dentro);
+  pointer-events: none;
+  overflow: hidden;
+  animation: aparece var(--dur-2) linear both;
+}
+@keyframes aparece { from { opacity: 0; } }
+
+/* Colunas da grade (a mesma de .grid): faixas de giz a 3%, os intervalos vazios. */
+.colunas {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: calc(var(--content-max) + 2 * var(--margin));
+  margin-inline: auto;
+  padding-inline: var(--margin);
+  --colw: calc((100% - (var(--cols) - 1) * var(--gutter)) / var(--cols));
+  background-origin: content-box;
+  background-clip: content-box;
+  background-image: repeating-linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--giz) 3%, transparent) 0 var(--colw),
+    transparent var(--colw) calc(var(--colw) + var(--gutter))
+  );
+}
+
+/* Linhas de base a cada 8 px, a 2%. */
+.linhas {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--giz) 2%, transparent) 0 1px,
+    transparent 1px 8px
+  );
+}
+
+.desenho {
+  position: absolute;
+  top: 0;
+  left: 0;
+  overflow: visible;
+  fill: none;
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+/* Traço tracejado 6 4 = em construção: a mesma gramática do Levantamento (spec §7.1). */
+.caixas { stroke: var(--line-ui); stroke-dasharray: 6 4; }
+.cotas { stroke: var(--text-3); }
+
+/* Chip: linha de negócio (Archivo) + linha técnica medida (mono, caixa alta). Posicionado pelo JS. */
+.chip {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: grid;
+  gap: 2px;
+  width: max-content;
+  max-width: min(36ch, calc(100vw - 2 * var(--margin)));
+  padding: 4px 8px 5px;
+  background: var(--surface-2);
+  border: 1px solid var(--line-ui);
+  color: var(--text-1);
+}
+.negocio {
+  font-size: var(--fs-small);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: 0.005em;
+  text-wrap: pretty;
+}
+.tecnica { color: var(--text-3); white-space: nowrap; }
+/* O vazio não é um elemento: o chip dele é recuado, sem fundo sólido de componente. */
+.chip[data-vazio] { background: var(--bg); border-style: dashed; }
+.chip[data-vazio] .negocio { color: var(--text-2); }
+
+@media (prefers-reduced-motion: reduce) {
+  .camada { animation: none; }
+}
+@media (prefers-contrast: more) {
+  .linhas { display: none; }
+}
+/* Cores forçadas: a camada é decorativa e some (spec §19). */
+@media (forced-colors: active) {
+  .camada { display: none; }
+}
