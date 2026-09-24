@@ -1,0 +1,105 @@
+/* Gois Group — design tokens (spec §4). Única fonte de cor, tipo, espaço, forma e motion. */
+:root {
+  color-scheme: dark;
+
+  /* ── cor: primitivos ─────────────────────────────── */
+  --breu: #0b0b0a; --grafite-1: #121211; --grafite-2: #1a1a18; --grafite-3: #242421;
+  --linha: #2a2a27; --linha-forte: #3c3b37; --linha-ui: #6e6d67;
+  --giz: #eeede8; --branco: #ffffff; --cinza-2: #a9a8a1; --cinza-3: #8f8e87;
+  --rubrica: #ff5a1f;
+  --papel: #e9e7e0; --papel-2: #dedcd4; --tinta: #0b0b0a; --tinta-2: #4a4944; --tinta-3: #62615b;
+  --linha-papel: #c9c7bf; --papel-ui: #7a7872;
+
+  /* ── cor: semânticos ─────────────────────────────── */
+  --bg: var(--breu); --surface-1: var(--grafite-1); --surface-2: var(--grafite-2); --surface-3: var(--grafite-3);
+  --line: var(--linha);             /* decorativa */
+  --line-deco: var(--linha-forte);  /* decorativa */
+  --line-ui: var(--linha-ui);       /* informativa (≥ 3:1) */
+  --text-1: var(--giz); --text-2: var(--cinza-2); --text-3: var(--cinza-3);
+  --accent: var(--rubrica); --focus-ring: var(--rubrica);
+  --btn-bg: var(--giz); --btn-bg-hover: var(--branco); --btn-fg: var(--breu);
+  --selection-bg: var(--giz); --selection-fg: var(--breu);
+
+  /* ── luz e textura (as únicas do site) ───────────── */
+  --luz-hero: radial-gradient(1200px 800px at 12% -10%, rgb(238 237 232 / 0.035), transparent 70%);
+  --hachura: repeating-linear-gradient(135deg, rgb(238 237 232 / 0.06) 0 1px, transparent 1px 6px);
+  --edge-light: inset 0 1px 0 rgb(238 237 232 / 0.05);
+  --shadow: none;
+
+  /* ── tipografia ──────────────────────────────────── */
+  --font-sans: var(--font-archivo), Arial, sans-serif;
+  --font-mono: var(--font-martian), 'Martian Fallback', ui-monospace, monospace;
+
+  --fs-hero: clamp(3rem, 1.5rem + 6.667vw, 7.5rem);
+  --fs-display-xl: clamp(2.5rem, 1.25rem + 5.556vw, 6.25rem);
+  --fs-display-l: clamp(2rem, 1.083rem + 4.074vw, 4.75rem);
+  --fs-display-m: clamp(1.625rem, 1.167rem + 2.037vw, 3rem);
+  --fs-numeral: clamp(2.75rem, 1.5rem + 5.556vw, 6.5rem);
+  --fs-title: clamp(1.25rem, 1.042rem + 0.926vw, 1.875rem);
+  --fs-lead: clamp(1.125rem, 1.021rem + 0.463vw, 1.4375rem);
+  --fs-body: clamp(1rem, 0.958rem + 0.185vw, 1.125rem);
+  --fs-eyebrow: clamp(0.9375rem, 0.896rem + 0.185vw, 1.0625rem);
+  --fs-small: clamp(0.875rem, 0.854rem + 0.093vw, 0.9375rem);
+  --fs-label: clamp(0.6875rem, 0.667rem + 0.093vw, 0.75rem);
+  --fs-micro: clamp(0.625rem, 0.604rem + 0.093vw, 0.6875rem);
+
+  --measure-body: 64ch;
+  --measure-lead: 44ch;
+
+  /* ── espaço, grid ────────────────────────────────── */
+  --s-1: 4px; --s-2: 8px; --s-3: 12px; --s-4: 16px; --s-5: 24px; --s-6: 32px;
+  --s-7: 48px; --s-8: 64px; --s-9: 96px; --s-10: 128px; --s-11: 192px; --s-12: 256px;
+  --section-y: clamp(6rem, 4rem + 8.889vw, 12rem);
+  --cols: 4; --margin: 20px; --gutter: 12px; --content-max: 1520px; --header-h: 56px;
+  --col-corte: 4;
+
+  /* ── forma, profundidade, camadas ────────────────── */
+  --radius: 0;
+  --hairline: 1px;
+  --control-h: 48px; --control-h-sm: 36px; --target-min: 44px;
+  --z-estrutura: 0; --z-conteudo: 1; --z-corte: 2; --z-dentro: 40; --z-header: 50; --z-pill: 55; --z-menu: 60;
+
+  /* ── motion ──────────────────────────────────────── */
+  --dur-1: 90ms;   /* pressão, cor curta */
+  --dur-2: 160ms;  /* hover, sublinhado, rótulos */
+  --dur-3: 240ms;  /* ficha, painéis, header, fases */
+  --dur-4: 320ms;  /* transição de página, menu */
+  --dur-5: 560ms;  /* títulos revelados por corte */
+  --dur-6: 640ms;  /* varredura do corte na abertura */
+  --dur-7: 720ms;  /* traçado da linha do Método */
+  --ease-cut: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-move: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-draw: cubic-bezier(0.55, 0, 0.1, 1);
+  --ease-exit: cubic-bezier(0.5, 0, 0.75, 0);
+  --stagger: 40ms; --stagger-max: 240ms; --reveal-y: 16px;
+}
+
+@media (min-width: 600px) { :root { --cols: 8; --margin: 32px; --gutter: 16px; --col-corte: 7; } }
+@media (min-width: 900px) { :root { --cols: 12; --margin: 40px; --gutter: 20px; --col-corte: 11; } }
+@media (min-width: 1280px) { :root { --margin: 64px; --gutter: 24px; --col-corte: 10; } }
+@media (min-width: 1680px) { :root { --margin: 80px; } }
+
+@media (max-width: 599px) { :root { --stagger: 30ms; --reveal-y: 8px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-3: 0ms; --dur-5: 0ms; --dur-6: 0ms; --dur-7: 0ms; --dur-4: 120ms; --reveal-y: 0px; --stagger: 0ms; }
+}
+
+/* Superfície papel: só a Visão (e o header quando está sobre ela). A Rubrica não existe sobre papel. */
+[data-surface='papel'] {
+  --bg: var(--papel); --surface-1: var(--papel-2); --surface-2: var(--papel-2);
+  --line: var(--linha-papel); --line-deco: var(--linha-papel); --line-ui: var(--papel-ui);
+  --text-1: var(--tinta); --text-2: var(--tinta-2); --text-3: var(--tinta-3);
+  --focus-ring: var(--tinta); --accent: transparent;
+  --btn-bg: var(--tinta); --btn-bg-hover: var(--breu); --btn-fg: var(--papel);
+  --selection-bg: var(--tinta); --selection-fg: var(--papel);
+  --hachura: repeating-linear-gradient(135deg, rgb(11 11 10 / 0.08) 0 1px, transparent 1px 6px);
+  color-scheme: light;
+}
+
+@media (prefers-contrast: more) {
+  :root { --line-ui: var(--cinza-2); --hachura: none; --line-deco: var(--linha-ui); }
+}
+@media (forced-colors: active) {
+  :root { --focus-ring: Highlight; }
+}

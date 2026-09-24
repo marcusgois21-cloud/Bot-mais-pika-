@@ -1,0 +1,27 @@
+/* Grade de 4 / 8 / 12 colunas (spec §4.3). */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+  column-gap: var(--gutter);
+  padding-inline: var(--margin);
+  max-width: calc(var(--content-max) + 2 * var(--margin));
+  margin-inline: auto;
+  width: 100%;
+}
+.container {
+  padding-inline: var(--margin);
+  max-width: calc(var(--content-max) + 2 * var(--margin));
+  margin-inline: auto;
+  width: 100%;
+}
+.full { grid-column: 1 / -1; }
+
+/* Seção padrão: hairline de ponta a ponta no topo, ritmo vertical --section-y. */
+.secao {
+  position: relative;
+  padding-block: var(--section-y);
+  border-top: 1px solid var(--line);
+}
+.secao--sem-linha { border-top: 0; }
+.secao__rotulo { grid-column: 1 / -1; margin-bottom: var(--s-5); color: var(--text-3); }
+@media (min-width: 900px) { .secao__rotulo { grid-column: 1 / 4; } }

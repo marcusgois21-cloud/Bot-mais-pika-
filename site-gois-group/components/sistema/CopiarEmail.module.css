@@ -1,0 +1,12 @@
+.email { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 4px 16px; font-size: var(--fs-body); }
+.copiar {
+  min-height: var(--target-min);
+  padding: 0 4px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-2);
+}
+@media (hover: hover) { .copiar:hover { color: var(--text-1); } }

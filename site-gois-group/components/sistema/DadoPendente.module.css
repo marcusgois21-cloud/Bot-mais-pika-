@@ -1,0 +1,24 @@
+.pendente {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 8px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1.5;
+  color: var(--text-2);
+  outline: 1px dotted var(--line-ui);
+  outline-offset: 2px;
+  background-image: var(--hachura);
+  padding: 0 4px;
+  max-width: 100%;
+  vertical-align: baseline;
+}
+.etiqueta {
+  font-size: var(--fs-micro);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}

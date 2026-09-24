@@ -1,0 +1,41 @@
+/* Revelações (spec §8, regras comuns). Só existem sob html.js e com movimento permitido:
+   sem JS, ou com reduced motion, nada fica oculto. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js [data-reveal='corte']:not([data-revelado]) { clip-path: inset(0 100% 0 0); }
+  html.js [data-reveal='corte'][data-revelado] {
+    animation: revela-corte var(--dur-5) var(--ease-cut) both;
+    animation-delay: var(--reveal-delay, 0ms);
+  }
+  html.js [data-reveal='fade']:not([data-revelado]) { opacity: 0; transform: translateY(var(--reveal-y)); }
+  html.js [data-reveal='fade'][data-revelado] {
+    animation: revela-fade 360ms var(--ease-cut) both;
+    animation-delay: var(--reveal-delay, 80ms);
+  }
+  html.js [data-reveal='linha']:not([data-revelado]) { transform: scaleX(0); transform-origin: 0 50%; }
+  html.js [data-reveal='linha'][data-revelado] {
+    transform-origin: 0 50%;
+    animation: revela-linha 480ms var(--ease-draw) both;
+    animation-delay: var(--reveal-delay, 0ms);
+  }
+  /* Elementos já visíveis no carregamento não fazem revelação. */
+  html.js [data-reveal][data-revelado='imediato'] { animation: none; clip-path: none; opacity: 1; transform: none; }
+}
+@keyframes revela-corte { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+@keyframes revela-fade { from { opacity: 0; transform: translateY(var(--reveal-y)); } to { opacity: 1; transform: none; } }
+@keyframes revela-linha { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+
+/* Transições entre páginas (spec §16): a página nova entra por corte sobre a antiga, que fica parada. */
+::view-transition-old(root) { animation: none; }
+::view-transition-new(root) { animation: vt-corte var(--dur-4, 320ms) var(--ease-move) both; }
+html[data-vt-dir='back']::view-transition-new(root) { animation-name: vt-corte-volta; }
+@keyframes vt-corte { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+@keyframes vt-corte-volta { from { clip-path: inset(0 0 0 100%); } to { clip-path: inset(0); } }
+::view-transition-group(site-header) { animation: none; }
+::view-transition-old(site-header) { animation: none; opacity: 0; }
+::view-transition-new(site-header) { animation: none; }
+::view-transition-group(*) { animation-duration: 320ms; animation-timing-function: var(--ease-move); }
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-new(root), html[data-vt-dir='back']::view-transition-new(root) { animation: vt-fade 120ms linear both; }
+  ::view-transition-group(*) { animation-duration: 0ms; }
+}
+@keyframes vt-fade { from { opacity: 0; } }

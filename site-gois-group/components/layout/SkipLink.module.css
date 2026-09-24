@@ -1,0 +1,13 @@
+.skip {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: calc(var(--z-menu) + 1);
+  padding: 12px 16px;
+  background: var(--giz);
+  color: var(--breu);
+  font-size: var(--fs-small);
+  font-weight: 560;
+  transform: translateY(-200%);
+}
+.skip:focus-visible { transform: none; outline-color: var(--rubrica); }
