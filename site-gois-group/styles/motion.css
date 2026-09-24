@@ -1,4 +1,5 @@
-/* Revelações (spec §8, regras comuns). Só existem sob html.js e com movimento permitido:
+/* Revelações (spec §8, regras comuns). Outros valores (ex.: "trilho") só recebem data-revelado;
+   a coreografia fica no módulo do componente. Só existem sob html.js e com movimento permitido:
    sem JS, ou com reduced motion, nada fica oculto. */
 @media (prefers-reduced-motion: no-preference) {
   html.js [data-reveal='corte']:not([data-revelado]) { clip-path: inset(0 100% 0 0); }

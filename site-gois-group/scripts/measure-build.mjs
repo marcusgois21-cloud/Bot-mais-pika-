@@ -33,8 +33,18 @@ function falhar(msg) {
 
 if (!fs.existsSync(HTML)) falhar('out/index.html não encontrado — rode `next build` antes.')
 
-/** Mesma regra do next.config.ts: variável de ambiente, senão o commit atual, senão "local". */
+/** Carimbo gravado pelo next.config.ts neste build (mesma data e hash do site). */
+const CARIMBO = (() => {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(RAIZ, '.next/gg-build.json'), 'utf8'))
+  } catch {
+    return null
+  }
+})()
+
+/** Mesma regra do next.config.ts: carimbo do build, variável de ambiente, senão o commit atual, senão "local". */
 function hashDoBuild() {
+  if (CARIMBO?.sha) return CARIMBO.sha
   if (process.env.NEXT_PUBLIC_BUILD_SHA) return process.env.NEXT_PUBLIC_BUILD_SHA
   try {
     return execSync('git rev-parse --short HEAD', { cwd: RAIZ, stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
@@ -44,6 +54,7 @@ function hashDoBuild() {
 }
 /** Data do build: a variável de ambiente, se definida; senão, quando o export gravou a página inicial. */
 function dataDoBuild() {
+  if (CARIMBO?.date && !Number.isNaN(Date.parse(CARIMBO.date))) return new Date(CARIMBO.date).toISOString()
   const env = process.env.NEXT_PUBLIC_BUILD_DATE
   if (env && !Number.isNaN(Date.parse(env))) return new Date(env).toISOString()
   return fs.statSync(HTML).mtime.toISOString()

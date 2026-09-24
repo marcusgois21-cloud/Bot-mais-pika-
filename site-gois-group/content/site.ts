@@ -45,5 +45,5 @@ export const NAV = [
 export const NAV_COMPLETA = [
   { href: '/', rotulo: 'Início' },
   ...NAV,
-  { href: '/contato/', rotulo: 'Contato' },
+  { href: '/contato/?origem=rodape-nav', rotulo: 'Contato' },
 ] as const

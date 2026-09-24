@@ -307,6 +307,8 @@ export function CutPlane() {
         range.disabled = dentro()
       }
       ds.pronto = ''
+      // a camada "Ver por dentro" re-mede quando a alça do corte fica visível
+      window.dispatchEvent(new Event('gg:reveal'))
       if (reduzir.matches || (!navegou && performance.now() > 1200)) {
         // movimento reduzido, ou passou do teto de 1200 ms: estado final direto, sem abertura
         ds.fase = 'imediata'

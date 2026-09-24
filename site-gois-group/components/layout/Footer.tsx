@@ -109,7 +109,7 @@ export function Footer() {
         <div className={styles.barra}>
           <p className="t-small c-3">© {ano(BUILD_DATE)} Gois Group</p>
           <p className="t-small c-3">
-            Versão publicada em {dataCurta(BUILD_DATE)} <span className="t-label">{BUILD_SHA}</span>
+            Versão publicada em {dataCurta(BUILD_DATE)} <span className="t-label" style={{ textTransform: 'none' }}>{BUILD_SHA}</span>
           </p>
           <VerPorDentroBotao />
           <a href="#conteudo" className={`link link--quieto t-small ${styles.topo}`}>

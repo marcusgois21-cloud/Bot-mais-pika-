@@ -38,7 +38,7 @@ export const disciplinas: Disciplina[] = [
     capacidades: ['Identidade digital (Branding)', 'Design de interface', 'Design system', 'Motion', 'Redação'],
     pergunta: 'Como ele é lido em meio segundo?',
     // {contraste} e {altura} são derivados no build a partir de styles/tokens.css (scripts/derive-tokens.mjs)
-    decisao: 'Rótulo com verbo, contraste de {contraste}:1, {altura} px de altura e foco visível para quem navega pelo teclado.',
+    decisao: 'Rótulo com verbo, contraste de {contraste}:1, {altura} px de altura e foco visível para quem navega pelo teclado.',
     realce: 'botao',
   },
   {

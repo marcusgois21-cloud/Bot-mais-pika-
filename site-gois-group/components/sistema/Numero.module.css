@@ -2,6 +2,7 @@
 .etiqueta { min-height: 1.3em; }
 .valor { display: flex; align-items: baseline; gap: 0.12em; color: var(--text-1); }
 .unidade { color: var(--text-2); }
+.unidade:global(.t-label) { text-transform: none; }
 /* Largura fixa de 2,4 em no tamanho do numeral; altura = versal (0,686 em) + 0,2 em. */
 .quadro {
   display: grid;

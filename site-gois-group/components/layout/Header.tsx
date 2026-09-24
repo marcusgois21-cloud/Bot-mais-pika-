@@ -25,7 +25,10 @@ export function Header({ email }: { email?: string }) {
   const botaoMenuRef = useRef<HTMLButtonElement>(null)
   const menuRef = useRef<HTMLDivElement>(null)
 
-  const atual = (href: string) => pathname === href || (href !== '/' && pathname.startsWith(href))
+  const atual = (href: string) => {
+    const rota = href.split('?')[0]
+    return pathname === rota || (rota !== '/' && pathname.startsWith(rota))
+  }
 
   // Scroll: listener passivo, agrupado em rAF, só troca classes.
   useEffect(() => {
@@ -165,7 +168,7 @@ export function Header({ email }: { email?: string }) {
       <div id="menu-mobile" ref={menuRef} className={styles.menu} data-aberto={aberto || undefined} hidden={!aberto}>
         <nav aria-label="Menu" className={styles.menuConteudo}>
           <ul className={styles.menuLinks}>
-            {[...NAV, { href: '/contato/', rotulo: 'Contato' }].map(item => (
+            {[...NAV, { href: '/contato/?origem=menu-contato', rotulo: 'Contato' }].map(item => (
               <li key={item.href}>
                 <TransitionLink
                   href={item.href}

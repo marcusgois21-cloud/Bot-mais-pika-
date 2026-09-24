@@ -36,7 +36,7 @@
   border: 1px solid var(--line-ui);
   flex-shrink: 0;
 }
-.quadrado[data-ligado] { background: var(--accent); border-color: var(--accent); }
+.quadrado[data-ligado] { background: var(--text-1); border-color: var(--text-1); }
 
 .pill {
   position: fixed;
