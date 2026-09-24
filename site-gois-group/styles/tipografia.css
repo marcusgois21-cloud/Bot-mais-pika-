@@ -76,8 +76,6 @@ p, li, dd { text-wrap: pretty; hyphens: manual; }
   .link--quieto:hover::after { transform: scaleX(1); transform-origin: 0 50%; }
 }
 .link--quieto:focus-visible::after { transform: scaleX(1); transform-origin: 0 50%; }
-/* O CTA secundário do hero tem área de toque de 44 px com 8 px de respiro: a linha fica na base do texto. */
-.link[data-hero-alvo='cta2'] { --link-base: 8px; }
 .link .seta { transition: transform var(--dur-2) var(--ease-cut); }
 @media (hover: hover) { .link:hover .seta--direita { transform: translateX(4px); } }
 @media (hover: hover) { .link:hover .seta--baixo { transform: translateY(3px); } }

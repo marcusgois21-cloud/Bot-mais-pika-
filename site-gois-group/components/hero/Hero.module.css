@@ -40,8 +40,7 @@
   min-height: var(--target-min);
   padding-block: 8px;
   /* o sublinhado do .link fica na base do texto, não na base da área de toque */
-  background-origin: content-box;
-  background-clip: content-box;
+  --link-base: 8px;
   font-size: var(--fs-body);
   font-weight: 500;
   line-height: 1.5;
